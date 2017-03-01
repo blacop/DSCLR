@@ -52,7 +52,7 @@ Status InitQueue(SqQueue &Q) { //初始化顺序队列Q 1
 	//SqQueue &Q 指针或引用从外面传进来
 	Q->base = (SqQueue *)malloc(MAX_QSIZE * sizeof(SqQueue));//开辟空间
 	if (!Q->front) exit(OVERFLOW);//开辟失败则退出
-	Q->front = Q->rear = 0;//Q->front->next = NULL; //<==> Q->rear->next = NULL;	
+	Q->front = Q.rear = 0;//Q->front.next = NULL; //<==> Q.rear.next = NULL;	
 	return TRUE;
 }
 Status DestroyQueue(SqQueue &Q) //销毁顺序队列Q 2
@@ -62,24 +62,51 @@ Status ClearQueue(SqQueue &Q) //清空顺序队列Q 3
 Status QueueEmpty(SqQueue Q) //判断顺序队列Q是否为空 4
 {
 	//出队 入队
+	if (Q.rear == Q.front)
+	{
+		return TRUE;
+	}
+	else {
+		return FALSE;
+	}
+}
+Status QueueFull(SqQueue Q) //判断顺序队列Q是否满
+{
+	//出队 入队,队尾留一个空位置
+	if if ((Q.rear + 1) % MAX_QSIZE == Q.front) //队尾留一个空位置
+	{
+		return TRUE;
+	}
+	else {
+		return FALSE;
+	}
 }
 int QueueLength(SqQueue Q) //求顺序队列Q的长度 5
 {}
 QElemType GetHead(SqQueue Q) //取顺序队列Q的 Head 元素 取得队列的 出口的元素 6
 {}
 Status EnQueue(SqQueue &Q, QElemType e) { //入队列 压队列 加入一个队列顶元素 7
-	//循环指针++ move 必须求模 (rear+1) mod MAX_QSIZE
-	QueuePtr P＝SqQueue malloc(sizeof(Qnode));//tempPtr,repos, insert new node P
-	P->next = NULL;//尾插 new node P is tail
-	Q->rear->next = p;//尾指 rearPtr finger new node
-	Q->rear = P;//rearPtr++ move
+	//循环指针++ move 必须求模 (rear+1) % MAX_QSIZE
+	if (QueueFull()) {
+		return FALSE;
+	}
+	else {
+		Q.base[Q.rear] = e;
+		Q.rear = (Q.rear + 1) % MAX_QSIZE; //rear++ move//关键，要取模
+		return TRUE;
+	}
 }
-Status Dequeue(SqQueue &Q, QElemType &e) { //出队列 弹出一个队列顶元素 8
-	//循环 指针++ move 必须求模 (rear+1) mod MAX_QSIZE
-	e = Q->front->data;
-	QueuePtr r = Q->front->next;//tempPtr finger node2
-	Q->front->next = r->next;//Q->front++ move  
-	free(r);
+Status DeQueue(SqQueue &Q, QElemType &e) { //出队列 弹出一个队列顶元素 8
+	//循环 指针++ move 必须求模 (front+1) % MAX_QSIZE
+	if (QueueEmpty())
+	{
+		return FALSE;
+	}
+	else {
+		e = Q.base[Q.front];
+		Q.front = (Q.front + 1) % MAX_QSIZE;
+	}
+	return TRUE;
 }
 Status QueueTraverse(SqQueue Q, visit()) //遍历顺序队列Q:依次对S的每个元素调用visit() 9
 {}

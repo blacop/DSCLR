@@ -73,7 +73,7 @@ Status EnQueue(LinkQueue &Q, QElemType e) //入队列 压队列 加入一个队列顶元素 7
 	Q.rear->next = p;//尾指 rearPtr finger new node
 	Q.rear = P;//rearPtr++ move
 }
-Status Dequeue(LinkQueue &Q, QElemType &e) //出队列 弹出一个队列顶元素 8
+Status DeQueue(LinkQueue &Q, QElemType &e) //出队列 弹出一个队列顶元素 8
 {
 	e = Q.front->data;
 	QueuePtr r = Q.front->next;//tempPtr finger node2

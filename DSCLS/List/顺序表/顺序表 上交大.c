@@ -6,18 +6,21 @@
 #define ERROR 0
 #define INFEASIBLE -1
 #define OVERFLOW -2
+/*
 #define Status int
 #define ElemType int
-typedef int Status
-typedef int ElemType
-
+*/
 #define LIST_INIT_SIZE = 100;//表初始分配空间
 #define LIST_INCREMENT = 10;//空间分配增量
-
+typedef int Status;
+typedef int ElemType;
+/*
 #define Node ElemType
+typedef struct Node{}Node,*NodePtr; //元素类型重定义指针
 #define LEN sizeof(Node)
 #define MLC (Node *)malloc
 #define MLCS (Node *)malloc(sizeof(Node))
+*/
 /*
 //线性表的基本操作列表 CORE
 InitList(&L) //初始化线性表L  01 初始化
@@ -34,33 +37,32 @@ ListDelete(&L,i,e) //删除线性表L的第i个元素,被删除元素e的值,返
 ListTraverse(L,visit(e)) //遍历线性表:依次对L的每个元素调用visit()  12 遍历
 
 //----选修Electives----
-//visit(e) // 一般是指树型链表结构中对某个节点内容进行访问的函数， 13
-//	就是取出节点内容去做某一件事，通常算法中不写出具体函数内容。
-//  树型链表结构中自顶开始按照某种顺序顺藤摸瓜至某个节点的过程称为“遍历”
-//compare(e1,e2) //比较两个元素的大小,返回Bool 14
-//compareList(L1,L2) //比较两个线性表L的大小,返回Bool 14
+//visit(e) // 一般是指树型链表结构中对某个节点内容进行访问的函数 13
+//compare(e1,e2) //比较两个元素的大小,返回Bool 14.a
+//compareList(L1,L2) //比较两个线性表L的大小,返回Bool 14.b
 //-----------
-//union() //合并 15
-//merge() //合并 15
-//mergeList(&L1,L2) //合并两个线性表L 15
+//union() //求并集 15.a
+//mergeList(&L1,L2) //求并集&&升序排序， 合并两个线性表L 15.b
+//different() //求差集 15.c
+//ListAppend() //尾部插入元素,尾插 15.d
 //exchange() //交换一个父线性表L中的两个子线性表L 16
 */
 //---------------线性顺序表----------------
-//线性顺序表 初始化 插入 删除 查找 5合并 6交换 7判断为空 8求长度
-typedef struct { //封装一个线性表 为SqList
+//线性顺序表 初始化 插入 删除，查找，求并集，5合并排序， 6交换 7判断为空 8求长度,求差集,尾插
+typedef struct SqList { //封装一个线性表 为SqList
 	ElemType *elem;//存储空间，存放头地址,也可表示数组的名字 或地址  或第一个元素
 	int length;//线性表当前长度
 	int listSize;//当前存储容量
-}SqList;
-Status InitList_Sq(SqList &L) { 
+}SqList, List, *ListPtr;
+Status InitList_Sq(SqList &L) {
 	//初始化空的线性表,&L 引用参数表示会修改值
-	L.elem = (ElemType *)malloc(LIST_INIT_SIZE*sizeof(ElemType));//分配内存，返回void*指针，类型强转一下
+	L.elem = (ElemType *)malloc(LIST_INIT_SIZE * sizeof(ElemType));//分配内存，返回void*指针，类型强转一下
 	if (!L.elem) exit(OVERFLOW);//OVERFLOW是返回到OS的
 	L.length = 0;
 	L.listSize = LIST_INIT_SIZE;
 	return TRUE;
 }//InitList_Sq
-Status ListInsert_Sq_Pointer(SqList &L, int i, ElemType e) { 
+Status ListInsert_Sq_Pointer(SqList &L, int i, ElemType e) {
 	//插入线性表 指针法，i表示的是插入位置，不是序号，i的最大值length+1是表示可以在数组的最后位置↑的右边位置↑length+1位置插入 ，E是插入值
 	//i的合法值为1<=i<=ListLength_Sq(L)
 	/*L.lengath指的是该顺序表的长度，并非指的是第最后一个元素（第length个）。
@@ -82,7 +84,7 @@ Status ListInsert_Sq_Pointer(SqList &L, int i, ElemType e) {
 	if (i<1 || i>L.length + 1) return FALSE;//i的合法值为1<=i<=ListLength_Sq(L)
 	if (L.length >= L.listSize) { //当前存储空间已满，(realloc就是)增加内存分配，函数realloc()
 								  // void* realloc(void* ptr, unsigned newsize);  给一个已经分配了地址的指针重新分配空间,参数ptr为原有的空间地址,newsize是重新申请的地址长度.
-		ElemType *newbase = (ElemType *)realloc(L.elem, L.(LIST_INIT_SIZE + LIST_INCREMENT)*sizeof(ElemType));
+		ElemType *newbase = (ElemType *)realloc(L.elem, L.(LIST_INIT_SIZE + LIST_INCREMENT) * sizeof(ElemType));
 		if (!newbase) exit(OVERFLOW);//存储分配失败
 		L.elem = newbase;//新的地址
 		L.listSize += LIST_INCREMENT;//增加存储容量       
@@ -99,7 +101,7 @@ Status ListInsert_Sq_Pointer(SqList &L, int i, ElemType e) {
 	return TRUE;
 }//ListInsert_Sq
 Status ListInsert_Sq_Pointer_Se(SqList &L, int i, ElemType e) { //插入线性表 使用指针 简化写法  不要新开辟内存
-	if (i<1 || i>L.length+1) return FALSE;//i的合法值为1<=i<=ListLength_Sq(L)+1  (L),因为 index <==> i-1
+	if (i<1 || i>L.length + 1) return FALSE;//i的合法值为1<=i<=ListLength_Sq(L)+1  (L),因为 index <==> i-1
 	if (L.length >= L.listSize) exit(OVERFLOW);//超出存储空间，报错退出
 	ElemType *p, *q;
 	q = &(L.elem[i - 1]);//q为插入位置 指针
@@ -115,26 +117,26 @@ Status ListInsert_Sq_Pointer_Se(SqList &L, int i, ElemType e) { //插入线性�
 }
 Status ListInsert_Sq_Index(SqList *L, int i, ElemType e) { //线性表 插入元素 使用下标
 	int k; //k表示最末尾下标
-	if (i<1 || i>L.length+1) return FALSE;//i的合法值为1<=i<=ListLength_Sq(L)
+	if (i<1 || i>L.length + 1) return FALSE;//i的合法值为1<=i<=ListLength_Sq(L)
 	if (L.length >= L.listSize) exit(OVERFLOW);//超出存储空间，报错退出	
 	if (i <= L->length) { //被插入的元素不在表尾
-		for (k = L->length - 1; p >= i - 1; k--) 
+		for (k = L->length - 1; p >= i - 1; k--)
 			L->data[k + 1] = L->data[k]; //将被插入位置之后的 所有元素 右移一位				
-	}	
-	L->data[i-1] = e;//插入 新元素e 的值
+	}
+	L->data[i - 1] = e;//插入 新元素e 的值
 	L->length++;//表长度+1
 	return TRUE;
 }
-Status ListDelete_Sq_Pointer(SqList &L, int i, ElemType &e) { 	
+Status ListDelete_Sq_Pointer(SqList &L, int i, ElemType &e) {
 	//删除线性表中的第i个元素
 	//删除L中第i个元素，后面的元素前移
 	ElemType *p, *q;
-	if ((i<1) || (i>L.length)) return FALSE;	
+	if ((i < 1) || (i > L.length)) return FALSE;
 	p = &L.elem[i - 1];//p表示删除的地址
 	//i是从1开始，所以要获取元素，必须-1！！因为下标是从0开始的
 	e = *p;//返回e的值
 	q = L.elem + L.length - 1;//q存放的是线性表内最后位置的指针,基地址+(length-1)表示最后位置的地址 
-	for (++p; p <= q; ++p) { 
+	for (++p; p <= q; ++p) {
 		//后面的元素前移，先++p是因为p的位置是删除的位置，所以从删除位置的右边+1算起
 		//↓+1
 		//☒㊣㊣
@@ -144,7 +146,7 @@ Status ListDelete_Sq_Pointer(SqList &L, int i, ElemType &e) {
 	--L.length;
 	return TRUE;
 }
-Status ListDelete_Sq_Index(SqList *L,int i,ElemType *e){ //线性表 删除元素 使用下标,i就是order
+Status ListDelete_Sq_Index(SqList *L, int i, ElemType *e) { //线性表 删除元素 使用下标,i就是order
 	int k;//控制变量 计数器
 	if (L->length == 0) //线性表为空
 		return FALSE;
@@ -158,14 +160,14 @@ Status ListDelete_Sq_Index(SqList *L,int i,ElemType *e){ //线性表 删除元�
 	L->length--;
 	return TRULE;
 }
-Status GetElem(SqList L, int i, ElemType *e){ //获取元素
-	if (L.length==0 ||i<1 || i>L.length){
+Status GetElem(SqList L, int i, ElemType *e) { //获取元素
+	if (L.length == 0 || i<1 || i>L.length) {
 		return FALSE;
 	}
-	*e = L.data[i-1];
+	*e = L.data[i - 1];
 	return TRUE;
 }
-Status LocateElem_OutOrderOrBool(sql &L, ElemType E){
+Status LocateElem_OutOrderOrBool(sql &L, ElemType E) {
 
 	//成功返回位序 或者 布尔值FALSE
 	/*函数名：LocateElem()
@@ -179,7 +181,7 @@ Status LocateElem_OutOrderOrBool(sql &L, ElemType E){
 	p = L.elem;
 	for (i = 1; i <= L.length; i++)
 	{
-		if (*L.elem == E){
+		if (*L.elem == E) {
 			L.elem = p;
 			return i;//返回i就是返回order,
 		}
@@ -189,7 +191,7 @@ Status LocateElem_OutOrderOrBool(sql &L, ElemType E){
 	return FALSE;//遍历线性表后 没有找到与element相等的元素
 }
 
-int LocateElem_OutOrder(SqList L, ElemType e, Status(*compare)(ElemType, ElemType)){
+int LocateElem_OutOrder(SqList L, ElemType e, Status(*compare)(ElemType, ElemType)) {
 	/*函数名：LocateElem()
 	参数：sql L, ElemType element
 	初始条件：线性表L已存在
@@ -198,36 +200,36 @@ int LocateElem_OutOrder(SqList L, ElemType e, Status(*compare)(ElemType, ElemTyp
 	若不存在，则返回0*/
 	/*函数指针是指向函数的指针变量。 因而“函数指针”本身首先应是指针变量，只不过该指针变量指向函数。这正如用指针变量可指向整型变量、字符型、数组一样，这里是指向函数。如前所述，C在编译时，每一个函数都有一个入口地址，该入口地址就是函数指针所指向的地址。有了指向函数的指针变量后，可用该指针变量调用函数，就如同用指针变量可引用其他类型变量一样，在这些概念上是大体一致的。函数指针有两个用途：调用函数和做函数的参数。*/
 	int i = 0;
-	while (i<L.length && (*compare)(L.elem[i], e))
+	while (i < L.length && (*compare)(L.elem[i], e))
 		i++;
 	if (i >= L.length)
 		return FALSE;
 	int order = i + 1;
 	return order;
 }
-Int CompareArray(SqList A, SqList B) { 
+int CompareArray(SqList A, SqList B) {
 	//比较数组大小的方法
 	j = 0;//计数器
-	while (j<A.length && j<B.length)
+	while (j < A.length && j < B.length)
 	{
-		if (A.elem[j]<B.elem[j]) return -1;
-		else if (A.elem[j]>B.elem[j]) return 1;
+		if (A.elem[j] < B.elem[j]) return -1;
+		else if (A.elem[j] > B.elem[j]) return 1;
 		else j++;
 	}
 	if (A.length == B.length) return 0;
-	else if (A.length<B.length) return -1;
+	else if (A.length < B.length) return -1;
 	else return 1;
 }//CompareArray
 Status Compare(ElemType e1, ElemType e2) {
 	//compare
 	//比较2个元素,> 返回 1, < 返回-1, ==返回0	
 	if (e1 == e2) return 0;
-	if (e1<e2) return -1;
+	if (e1 < e2) return -1;
 	return 1;
 }
 typedef int(*LocateElem_ptr)(ElemType, ElemType);//定义声明一个函数指针,类似于委托
 
-void union(List &La,List Lb){ 
+void union(List &La, List Lb) {
 	//线性表 求并集 这个是伪代码，下面的MergeList是真代码
 	/*
 	定义声明一个函数指针,类似于委托
@@ -241,40 +243,60 @@ void union(List &La,List Lb){
 	//不存在的元素插入到La
 	La_len = ListLength(La);
 	Lb_len = ListLength(Lb);
-	for(i=1;I<=Lb_len;i++){
-		GetElem(Lb,i,e);
-		if(!LocateElem(La,e,equal)){
-			ListInsert(La,++La_len,e);
+	for (i = 1; i <= Lb_len; i++) {
+		ElemType e = GetElem(Lb, i, e);
+		if (!LocateElem(La, e, equal)) {
+			ListInsert(La, ++La_len, e);
 		}
 	}//for
 }//union
-void MergeList(List La,List Lb,List &Lc){
+void MergeList(List La, List Lb, List &Lc) {
 	//union的具体实现
 	//合并顺序表，并且升序排序 到&Lc
-	pa = La.elem;pb = Lb.elem;//取头部指针a,b
-	Lc.listsize = Lc.length = La.length +Lb.length;
-	pc = Lc.elem = (ElemType*)malloc(Lc.listsize*sizeof(ElemType));//取指针，分配内存
-	if(!Lc.elem) exit(OVERFLOW);//分配内存失败
-	pa.last = La.elem +La.length -1;//取尾部指针a
-	pb.last = Lb.elem +Lb.length -1;//取尾部指针b
-	while(pa<=pa.last && pb<=pb.last){ //开始合并
-		if(*pa <= *pb){
-			* pc++ = * pa++;//a存入c
+	pa = La.elem; pb = Lb.elem;//取头部指针a,b
+	Lc.listsize = Lc.length = La.length + Lb.length;
+	pc = Lc.elem = (ElemType*)malloc(Lc.listsize * sizeof(ElemType));//取指针，分配内存
+	if (!Lc.elem) exit(OVERFLOW);//分配内存失败
+	pa.last = La.elem + La.length - 1;//取尾部指针a
+	pb.last = Lb.elem + Lb.length - 1;//取尾部指针b
+	while (pa <= pa.last && pb <= pb.last) { //开始合并
+		if (*pa <= *pb) {
+			*pc++ = *pa++;//a存入c
 		}
-		else{
-			* pc++ = * pb++;//b存入c
-		}		
+		else {
+			*pc++ = *pb++;//b存入c
+		}
 	}
-	while(pa<=pa.last){ * pc++ = * pa++;}//剩余元素a存入c 
-	while(pb<=pb.last){ * pc++ = * pb++;}//剩余元素b存入c
+	while (pa <= pa.last) { *pc++ = *pa++; }//剩余元素a存入c 
+	while (pb <= pb.last) { *pc++ = *pb++; }//剩余元素b存入c
 }//MergeList
-void exchange(SqList &L,int m,int n) {
+
+void different(List La, List Lb, List &Lc) { //求差集
+//求差集
+	La_len = ListLength(La);
+	Lb_len = ListLength(Lb);
+	ListPtr Lc = (SqList *)malloc(LIST_INIT_SIZE * sizeof(SqList));
+	int LcLastPtr = 0;//temp LcLastPtr指针，指向线性表尾部
+
+	for (i = 1; i <= Lb_len; i++) {
+		ElemType e = GetElem(Lb, i, e);
+		if (!LocateElem(La, e, equal)) { //La[i]!=Lb[i]
+			ListAppend(Lc, Lc[++LcLastPtr], e);// Lc Append data e.
+		}
+	}//end for
+}
+void ListAppend(List La, ElemType e) { //尾部插入元素,尾插，如果有个last指针，就很容易了
+	int maxlen = ListLength_Sq(La);
+	int lastPtr = maxlen - 1;
+	La[lastPtr + 1] = e;
+}
+void exchange(SqList &L, int m, int n) {
 	//线性表交换前m个元素和后n个元素 整体互换
 	SqList w;//temp ptr
 	int i, j;
-	for ( i = 0; i < n; i++){
+	for (i = 0; i < n; i++) {
 		w = L.elem[i + m];
-		for (j = m; j >= 1; j--){//j是末尾--
+		for (j = m; j >= 1; j--) {//j是末尾--
 			L.elem[i + j] = L.elem[i + j - 1];//整体右移,
 			//  →
 			//㊣㊣▁
@@ -285,7 +307,7 @@ void exchange(SqList &L,int m,int n) {
 
 }
 
-Int ListEmpty_Sq(SqList L) { //判断线性表L是否为空
+int ListEmpty_Sq(SqList L) { //判断线性表L是否为空
 	if L.length = 0 return TURE;
 	else return FALSE;
 }

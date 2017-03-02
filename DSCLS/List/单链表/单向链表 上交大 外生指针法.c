@@ -239,6 +239,16 @@ Status GetElem_Link_Yan(LinkList L, int i, ElemType &e) {
 	e = p->data;//取出第i个元素，值为e
 	return TRUE;
 }//GetElem_Link_Yan
-Status LL_DEL(LinkList &L,ElemType mink,ElemType maxk){
-	
+void BackBefore(LNode *s,LNode *q){ //Link Cirle, s linke before LNode q
+	P=s;
+	while (p->next!=q) p=->next;
+	p->next=s;
+}//BackBefore
+void BackBeforeAfterAgain(LNode *pa,LNode *pb){ //Link Cirle,twice，
+	//pa,pb finger LinkStack's two node. a link before b, b linke befor a.
+	BackBefore(pa,pb);
+	BackBefore(pb,pa);
+}//BackBeforeAfterAgain
+Status LL_DEL(LinkList &L, ElemType mink, ElemType maxk) {
+
 }

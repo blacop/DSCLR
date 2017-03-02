@@ -6,8 +6,10 @@
 #define FALSE 0
 #define INFEASIBLE  -1
 #define OVERFLOW -2
+/*
 #define ElemType int
 #define Status int
+*/
 typedef int ElemType;
 typedef int Status;
 /*
@@ -237,4 +239,6 @@ Status GetElem_Link_Yan(LinkList L, int i, ElemType &e) {
 	e = p->data;//取出第i个元素，值为e
 	return TRUE;
 }//GetElem_Link_Yan
-
+Status LL_DEL(LinkList &L,ElemType mink,ElemType maxk){
+	
+}

@@ -72,11 +72,11 @@ Status GetElem(struct LNode *L, int i, ElemType *e) {
 	/* L为带头节点的单链表的头指针，当第i个元素存在时，其值赋给e,并返回OK */
 	int j = 1;
 	LinkList *p = L->next;
-	while (p && j<i) { //until i-1
+	while (p && j < i) { //until i-1
 		p = p->next; //p++
 		j++;
 	}
-	if (!p || j>i)
+	if (!p || j > i)
 		return ERROR;
 	*e = p->data;
 	return OK;
@@ -124,12 +124,12 @@ Status ListInsert(struct LNode *L, int i, ElemType e) {
 	/* 在带头节点的单链表L中的第i个位置之前(before i means index == i-2)插入元素e*/
 	int j = 0;
 	struct LNode *p = L, *s = NULL; //2 assist Ptr,2个辅助指针
-	while (p && j<i - 1) {
+	while (p && j < i - 1) {
 		//Loc(i)'s index==(i-1),before i means index ==(i-2) 找到 第(i-1)个位置,插入其后
 		p = p->next;
 		j++;
 	}
-	if (!p || j>i - 1)
+	if (!p || j > i - 1)
 		return ERROR;
 	s = (struct LNode *)malloc(sizeof(struct LNode));
 	if (!s)
@@ -143,11 +143,11 @@ Status ListDelete(LinkList *L, int i, ElemType *e) {
 	/*在带头节点的单链表中删除第i个元素，并有e返回其值*/
 	LinkList *p = L, *q; //2 assist Ptr,2个辅助指针
 	int j = 0;
-	while (p->next && j< i - 1)	{ // find Loc(i-1)== find index==(i-2)
+	while (p->next && j < i - 1) { // find Loc(i-1)== find index==(i-2)
 		p = p->next; //p++
 		j++; // now p's Loc is Loc(i-1).
 	}
-	if (!p->next || j>i - 1)//becase j must cirle (i-1) times.
+	if (!p->next || j > i - 1)//becase j must cirle (i-1) times.
 		return ERROR;
 	q = p->next;//q finger to p's 后继Subsequent,p is i's 前驱precursor,
 	p->next = q->next;//
@@ -155,10 +155,10 @@ Status ListDelete(LinkList *L, int i, ElemType *e) {
 	free(q);
 	return OK;
 }
-Status ListTraverse(struct LNode *L, void(*visit)(ElemType)){
-/* 依次对L的每个元素调用vi(),打印输出语句*/
+Status ListTraverse(struct LNode *L, void(*visit)(ElemType)) {
+	/* 依次对L的每个元素调用vi(),打印输出语句*/
 	LinkList *p = L->next;
-	while (p){
+	while (p) {
 		visit(p->data);
 		p = p->next;
 	}

@@ -91,12 +91,13 @@ ListTraverse(L,visit()) //遍历线性表:依次对L的每个元素调用visit()
 //compareList(L1,L2) //比较两个线性表L的大小,返回Bool 14
 //mergeList(&L1,L2) //合并两个线性表L 15
 */
-//---------------线性单链表----------------
-//单链表 初始化 创建 头插法 尾插法 插入 删除 查找 合并 长度
+/*---------------线性单链表----------------
+单链表 初始化 创建 头插法 尾插法 插入 删除 查找 合并 长度
+*/
 typedef struct LNode { //封装 结构体 链表的结点==数据元素Elem,结点的指针==链表==数据对象Obj
 	ElemType data; //数据Domain ,数据项item
 	struct LNode *next; //指针,引用Reference
-}LNode, *LinkList;//类型重定义struct LNode为LNode，类型重定义 LNode的*指针 为LinkList
+}LNode, *LinkList,*PLNode;//类型重定义struct LNode为LNode，类型重定义 LNode的*指针 为LinkList
 Status InitList_Link_Guan(LinkList &L) { //初始化线性链表 产生一个头结点。单链表指针在外面传进来	
 	//head
 	//☒→NULL☞
@@ -249,6 +250,16 @@ void BackBeforeAfterAgain(LNode *pa,LNode *pb){ //Link Cirle,twice，
 	BackBefore(pa,pb);
 	BackBefore(pb,pa);
 }//BackBeforeAfterAgain
-Status LL_DEL(LinkList &L, ElemType mink, ElemType maxk) {
-
-}
+Status LinkList_BetweenDel(LinkList &L, ElemType mink, ElemType maxk) {
+	//删除大于mink小于maxk的所有元素，L是带头结点的单链表
+	P=L; //temp Ptr P finger L's head, then P finger mink's 前驱。
+	while(P->next!=NULL && P->next->data<=mink) //then P finger mink's 前驱。
+		P=P->next;//find the node before mink //找出第last个大于mink的元素
+	if(P->next=NULL) return FALSE; //mean mink's 前驱 not 存在 ，( !P->next )
+	Q=P->next; //temp Ptr Q finger mink
+	while(!Q && (Q->data < maxk)){ //DestroyList()
+		P->next = Q->next; //☊
+		free(Q); //✄
+		Q = P->next; //☌ ♂
+	}
+}//LinkList_BetweenDel

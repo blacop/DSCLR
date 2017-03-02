@@ -11,7 +11,10 @@
   <ItemGroup>
     <None Include="$(MSBuildThisFileDirectory)单链表\一元多项式.c" />
     <None Include="$(MSBuildThisFileDirectory)单链表\单向循环链表.c" />
-    <None Include="$(MSBuildThisFileDirectory)单链表\单向链表 上交大.c" />
+    <None Include="$(MSBuildThisFileDirectory)单链表\单向链表 上交大 自生指针法.c" />
+    <None Include="$(MSBuildThisFileDirectory)单链表\单向链表 上交大 外生指针法.c" />
+    <None Include="$(MSBuildThisFileDirectory)单链表\单向链表 上交大 和 大话.c" />
+    <None Include="$(MSBuildThisFileDirectory)单链表\单向链表 大话.c" />
     <None Include="$(MSBuildThisFileDirectory)单链表\单向链表.c" />
     <None Include="$(MSBuildThisFileDirectory)单链表\单链表 一次封装 整理 管炳耀.c" />
     <None Include="$(MSBuildThisFileDirectory)单链表\单链表 二次封装 增加 head tail len  严蔚敏P47 算法2.19 声明.c" />

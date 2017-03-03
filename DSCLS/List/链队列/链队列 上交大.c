@@ -6,8 +6,11 @@
 #define FALSE 0
 #define INFEASIBLE  -1
 #define OVERFLOW -2
-#define QElemType int
-#define Status int
+//#define QElemType int
+//#define Status int
+typedef int QElemType;
+typedef int ElemType;
+typedef int Status;
 /*
 #define Node LNode
 #define LEN sizeof(Node)
@@ -44,14 +47,14 @@ QueueTraverse(Q,visit()) //遍历链队列Q:依次对S的每个元素调用visit() 9
 typedef struct Qnode { //封装一个链队列Node Tan
 	QElemType data; //数据域
 	struct Qnode *next; //指针域 next
-}Qnode, QNode, *QueuePtr;
+}Qnode, QNode, *PQNode;
 typedef struct LinkQueue { //封装一个链队列 引用
-	QueuePtr front; //头指针
-	QueuePtr rear; //尾指针
+	PQNode front; //头指针
+	PQNode rear; //尾指针
 }LinkQueue;
 Status InitQueue(LinkQueue &Q) { //初始化链队列Q 1
 	//LinkQueue &Q 指针或引用从外面传进来
-	Q.front = Q.rear = (QueuePtr *)malloc(sizeof(QNode));//开辟空间
+	Q.front = Q.rear = (PQNode *)malloc(sizeof(QNode));//开辟空间
 	if (!Q.front) exit(OVERFLOW);//开辟失败则退出
 	Q.front->next = NULL; //<==> Q->rear->next = NULL;
 	return TRUE;
@@ -66,19 +69,57 @@ int QueueLength(LinkQueue Q) //求链队列Q的长度 5
 {}
 QElemType GetHead(LinkQueue Q) //取链队列Q的 Head 元素 取得队列的 出口的元素 6
 {}
-Status EnQueue(LinkQueue &Q, QElemType e) //入队列 压队列 加入一个队列顶元素 7
-{
-	QueuePtr P＝LinkQueue malloc(sizeof(Qnode));//tempPtr,repos, insert new node P
+Status EnQueue(LinkQueue &Q, QElemType e) { //入队列 压队列 加入一个队列顶元素 7
+	PQNode P＝(PQNode)malloc(sizeof(Qnode));//tempPtr,repos, insert new node P
+	P->data = e;
 	P->next = NULL;//尾插 new node P is tail
 	Q.rear->next = p;//尾指 rearPtr finger new node
 	Q.rear = P;//rearPtr++ move
 }
-Status DeQueue(LinkQueue &Q, QElemType &e) //出队列 弹出一个队列顶元素 8
-{
+Status DeQueue(LinkQueue &Q, QElemType &e) { //出队列 弹出一个队列顶元素 8
 	e = Q.front->data;
-	QueuePtr r = Q.front->next;//tempPtr finger node2
+	PQNode r = Q.front->next;//tempPtr finger node2
 	Q.front->next = r->next;//Q.front++ move  
 	free(r);
 }
 Status QueueTraverse(LinkQueue Q, visit()) //遍历链队列Q:依次对S的每个元素调用visit() 9
 {}
+//-----------------
+//Special
+//上交大 TV 9/29 , 00:47:05/01:06:27
+typedef struct Qnode { //封装一个链队列Node Tan
+	QElemType data; //数据域
+	struct Qnode *next; //指针域 next
+}Qnode, QNode, *PtrQNode, *PQNode;
+typedef struct LinkQueue { //封装一个链队列 引用
+	//PQNode front; //头指针 禁用
+	PQNode rear; //尾指针
+}LinkQueue;
+Status InitQueueCirle(LinkQueue &Q) {
+	//初始化
+	//LinkQueue Q; //指针或引用从外面传进来
+	Q.rear = (PQNode)malloc(sizeof(QNode);
+	Q.rear->next = Q.rear; //Core
+	return TRUE;
+}
+Status EnQueueCircle(LinkQueue &Q, QElemType e) { //入队列 压队列 加入一个队列顶元素 7
+	PQNode P＝(PQNode)malloc(sizeof(Qnode));//tempPtr,repos, insert new node P
+	P->data = e;
+	P->next = Q.rear->next;//尾插 new node P is tail, 指向 head，core
+	Q.rear->next = p;//尾指 rearPtr finger new nod, core
+	Q.rear = P;//rearPtr++ move // core
+}
+Status DeQueueCircle(LinkQueue &Q, QElemType &e) { //出队列 弹出一个队列顶元素 8
+	/* 2Ptr only , 2指针 专属
+	e = Q.front->data;
+	PQNode r = Q.front->next;//tempPtr finger node2
+	Q.front->next = r->next;//Q.front++ move
+	free(r);
+	*/
+	PQNode PtrH = Q.rear->next;
+	PQNode s = Q.rear->next->next;//node1
+	e = s->data;
+	PtrH->next = s->next;
+	return e;
+	free(s);
+}

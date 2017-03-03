@@ -6,10 +6,12 @@
 #define FALSE 0
 #define INFEASIBLE  -1
 #define OVERFLOW -2
-#define SElemType int
-#define Status int
-typedef int SElemType
-typedef int Status
+//#define SElemType int
+//#define Status int
+typedef int SElemType;
+typedef int ElemType;
+typedef int Status;
+typedef int size_t;
 #define MAXSIZE 100
 /*
 #define Node Node
@@ -96,25 +98,25 @@ typedef struct { //封装一个顺序栈结构 为SqStack
 	SElemType *top;//栈顶指针,SElemType的指针大小根据数据类型来确定
 	int stackSize;//当前存储容量
 }SqStack;
-Status InitStack_Sq(SqStack &S) {
+Status InitStack(SqStack &S) {
 	//初始化空的顺序栈S
-	S.base = (SElemType *)malloc(STACK_INIT_SIZE*sizeof(SElemType));//开内存
+	S.base = (SElemType *)malloc(STACK_INIT_SIZE * sizeof(SElemType));//开内存
 	if (!S.base) { //开失败
-		exit(OVERFLOW); 
+		exit(OVERFLOW);
 	}
 	S.top = S.base; //top指针 指向base指针
 	S.stackSize = STACK_INIT_SIZE; //记录当前存储容量
 	return TRUE;
-}//InitStack_Sq
-Status Push_Sq(SqStack &S, SElemType e) {
+}//InitStack
+Status Push(SqStack &S, SElemType e) {
 	//元素e插入到栈中,成为新的栈顶
-	if (S.top-S.base >= S.stackSize){ //栈满,则新开,或者可以不开,直接exit(OVERFLOW)
-		SElemType *newBase = (SElemType *)realoc(S.base, (S.stackSize + STACK_INCREMENT*sizeof(SElemType)));
+	if (S.top - S.base >= S.stackSize) { //栈满,则新开,或者可以不开,直接exit(OVERFLOW)
+		SElemType *newBase = (SElemType *)realoc(S.base, (S.stackSize + STACK_INCREMENT * sizeof(SElemType)));
 		//realloc(baseP,(oldLen+incLen)) 表示新增加内存
-		if (!newBase){ //新开失败
+		if (!newBase) { //新开失败
 			exit(OVERFLOW);
 		}
-		else{
+		else {
 			S.base = newBase;
 		}
 		S.top = S.base + S.stackSize;//top++,becase stackSize already+1
@@ -133,12 +135,11 @@ Status Push_Sq(SqStack &S, SElemType e) {
 	弹栈 top--;	top->value;
 	*/
 	return TRUE;
-}//Push_Sq
-Status Pop_Sq(SqStack &S, SElemType &e) {
+}//Push
+Status Pop(SqStack &S, SElemType &e) {
 	//从栈顶读取数据放入e内,栈中下下元素所在位置成为新的栈顶
-	if (S.top == S.base){ //栈空
+	if (S.top == S.base)  //栈空	
 		return FALSE;
-	}
 	e = *--S.top;
 	/*
 	优先级 '.' > "--" = '*',
@@ -154,16 +155,107 @@ Status Pop_Sq(SqStack &S, SElemType &e) {
 	压栈 value->top;top++;
 	弹栈 top--;	top->value;
 	*/
-	return TRUE;	
+	return TRUE;
 }//Pop
-
-Int StackEmpty_Sq(SqStack S) { //判断顺序栈S是否为空
+void GetTop(SqStack S, SElemType &e) {
+	//取栈顶元素
+	if (S.top == S.base)  //栈空
+		return FALSE;
+	e = *--S.top;
+	S.top++;
+}
+int StackEmpty(SqStack S) { //判断顺序栈S是否为空
 	if S.stackSize = 0 return TURE;
 	else return FALSE;
 }
-int StackSize_Sq(SqStack S) { //求顺序栈S的存储容量
+int StackSize(SqStack S) { //求顺序栈S的存储容量
 	return S.stackSize;
 }
+
+//上交大 TV 8/29 ,01：00:00/01:19:00
+void ReverseStack(SqStack S) {
+	//逆置栈
+	size_t i, n;
+	SElemType A[255];
+	n = 0;
+	while (!StackEmpty(S)) {
+		n++;
+		Pop(S, A[n]);//画图理解
+			//数组，可以当成队列。
+	}
+	for (i = 0; i < n + 1; i++) {
+		Push(S, A[i]);//画图理解
+	}
+}
+Status DifferenceElem(SqStack S, int e) {
+	//差集，栈 minus 元素
+	Stack T;
+	SElemType d;
+	while (!StackEmpty(S)) {
+		Pop(S, d);
+		if (d != e)
+			Push(T, d);
+	}//while
+	while (!StackEmpty(T)) {
+		Pop(T, d);
+		Push(S, d);
+	}//while
+}
+//Mix Type
+typedef struct { //封装一个顺序栈结构 为SqStack
+	SElemType *base;//基地址指针,栈底指针,存储空间，存放头地址,也可表示数组的名字 或地址  或第一个元素
+	SElemType *top;//栈顶指针,SElemType的指针大小根据数据类型来确定
+	int stackSize;//当前存储容量
+}SqStack, Stack;
+typedef struct SqQueue { //封装一个顺序队列Node Tan,
+						 //循环队列，用游标实现法
+	QElemType *base; //base 连续空间首地址
+	int front;//指向队列的头一个元素
+	int rear;//指向队尾的下一个元素，类似于==>top
+}SqQueue, Queue;
+
+void ReverseQueue(SqQueue &Q) {
+	//逆置队列
+	Stack S;
+	ElemType d;
+	InitStack(S);
+	while (!QueueEmpty(Q)) {
+		DeQueue(Q, d); //out 1234
+		Push(S, d); //in 1234
+	}
+	while (!StackEmpty(S)) {
+		Pop(S, d); //out 4321
+		EnQueue(Q, d); //in 4321
+	}
+}
+
+int symmetry() {
+	//对称
+	//使用栈，对读入的字符在&之前的都压栈，之后弹栈并
+	//和读入数比较，直到栈空并且读入数为@时对称，否则
+	//为不对称
+	InitStack(s);
+	scanf(ch);
+	while (ch<>"&") { //入栈
+		Push(s, ch);
+		scanf(ch);//last ch is throw
+	}//while
+	scanf(ch);
+	GetTop(s, x);//思考是否有必要，如果不加的话,就是while和do-while的区别
+	while (ch<>"@" && !StackEmpty(s)) {
+		Pop(s, x);
+		if (ch == x) { //match
+			scanf(ch);
+			GetTop(s, x);//思考是否有必要，如果不加的话
+		}//if
+	}//while
+	if (ch == "@" && StackEmpty(s)) {
+		return TRUE;
+	}
+	else {
+		return FALSE;
+	}
+}//symmetry
 
 
 

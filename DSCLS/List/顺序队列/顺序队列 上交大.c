@@ -6,9 +6,12 @@
 #define FALSE 0
 #define INFEASIBLE  -1
 #define OVERFLOW -2
-#define QElemType int
-#define Status int
+//#define QElemType int
+//#define Status int
 #define MAX_QSIZE 100
+typedef int QElemType;
+typedef int ElemType;
+typedef int Status;
 /*
 #define Node LNode
 #define LEN sizeof(Node)
@@ -110,3 +113,31 @@ Status DeQueue(SqQueue &Q, QElemType &e) { //出队列 弹出一个队列顶元素 8
 }
 Status QueueTraverse(SqQueue Q, visit()) //遍历顺序队列Q:依次对S的每个元素调用visit() 9
 {}
+//上交大 TV 8/29 ,01：00:00/01:19:00
+//Mix Type
+typedef struct { //封装一个顺序栈结构 为SqStack
+	SElemType *base;//基地址指针,栈底指针,存储空间，存放头地址,也可表示数组的名字 或地址  或第一个元素
+	SElemType *top;//栈顶指针,SElemType的指针大小根据数据类型来确定
+	int stackSize;//当前存储容量
+}SqStack, Stack;
+typedef struct SqQueue { //封装一个顺序队列Node Tan,
+						 //循环队列，用游标实现法
+	QElemType *base; //base 连续空间首地址
+	int front;//指向队列的头一个元素
+	int rear;//指向队尾的下一个元素，类似于==>top
+}SqQueue, Queue;
+
+void ReverseQueue(SqQueue &Q) {
+	//逆置队列
+	Stack S;
+	ElemType d;
+	InitStack(S);
+	while (!QueueEmpty(Q))	{
+		DeQueue(Q, d); //out 1234
+		Push(S, d); //in 1234
+	}
+	while (!StackEmpty(S)) {
+		Pop(S, d); //out 4321
+		EnQueue(Q, d); //in 4321
+	}
+}

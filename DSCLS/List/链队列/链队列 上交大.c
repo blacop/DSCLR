@@ -11,6 +11,7 @@
 typedef int QElemType;
 typedef int ElemType;
 typedef int Status;
+#define Empty 0;
 /*
 #define Node LNode
 #define LEN sizeof(Node)
@@ -77,6 +78,7 @@ Status EnQueue(LinkQueue &Q, QElemType e) { //入队列 压队列 加入一个队列顶元素 7
 	Q.rear = P;//rearPtr++ move
 }
 Status DeQueue(LinkQueue &Q, QElemType &e) { //出队列 弹出一个队列顶元素 8
+	if (QueueEmpty(Q)) return exit(Empty);//队列空
 	e = Q.front->data;
 	PQNode r = Q.front->next;//tempPtr finger node2
 	Q.front->next = r->next;//Q.front++ move  
@@ -109,17 +111,25 @@ Status EnQueueCircle(LinkQueue &Q, QElemType e) { //入队列 压队列 加入一个队列顶
 	Q.rear->next = p;//尾指 rearPtr finger new nod, core
 	Q.rear = P;//rearPtr++ move // core
 }
-Status DeQueueCircle(LinkQueue &Q, QElemType &e) { //出队列 弹出一个队列顶元素 8
+Status DeQueueCircle(LinkQueue &Q, QElemType &e) { //出队列头部 弹出一个队列顶元素 8
 	/* 2Ptr only , 2指针 专属
 	e = Q.front->data;
 	PQNode r = Q.front->next;//tempPtr finger node2
 	Q.front->next = r->next;//Q.front++ move
 	free(r);
 	*/
-	PQNode PtrH = Q.rear->next;
-	PQNode s = Q.rear->next->next;//node1
-	e = s->data;
-	PtrH->next = s->next;
-	return e;
+	if (Q.rear->next = Q.rear) return exit(Empty);//队列空
+	PQNode PtrH = Q.rear->next;//head node,node0
+	PQNode R = PtrH->next;//node1 ,out node1
+	PtrH->next = R->next;//head points node1.next
+	e = R->data;//out data
+				//return e;
+	if (R = Q.rear) { //判断node only 2
+		Q.rear = P; //防止丢失rear指针，circle only？
+	}//if	
 	free(s);
+}
+bool QueueEmptyCirle(LinkQueue Q) {//判断链队列Q是否为空 4
+	if (Q.rear->next = Q.rear) return true;
+	else return false;
 }

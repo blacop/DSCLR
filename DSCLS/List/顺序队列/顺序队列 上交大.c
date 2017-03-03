@@ -132,7 +132,7 @@ void ReverseQueue(SqQueue &Q) {
 	Stack S;
 	ElemType d;
 	InitStack(S);
-	while (!QueueEmpty(Q))	{
+	while (!QueueEmpty(Q)) {
 		DeQueue(Q, d); //out 1234
 		Push(S, d); //in 1234
 	}
@@ -141,3 +141,20 @@ void ReverseQueue(SqQueue &Q) {
 		EnQueue(Q, d); //in 4321
 	}
 }
+//---------
+//Special
+//Fabonacci
+
+Status Fabonacci(int K, SqQueue &Q; int MAX) {
+	int f;//f is sum;
+	Q.base = (QElemType *)malloc(K * sizeof(QElemType));//基地址
+	if (!Q.base) exit(OVERFLOW);
+	Q.base[0] = 0; Q.base[1] = 1; Q.rear = 2; f = 1;//f is sum;
+	while (f <= MAX) {
+		Q.base[Q.rear] = f;//se core 赋值 入队列
+		Q.rear = (Q.rear + 1) % K; //se core,rear指针 ++ move ,K is QueueLength 队列长度.
+		i = (Q.rear - 1 + K) % K;//core,求模运算，算出长度的绝对值，求出周期
+		j = (Q.rear - 2 + K) % K;//core,求模运算，算出长度的绝对值，求出周期
+		f = Q.base[i] + Q.base[j];//math function
+	}//while
+}//Fabonacci

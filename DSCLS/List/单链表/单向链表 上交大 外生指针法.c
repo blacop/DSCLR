@@ -93,35 +93,13 @@ ListTraverse(L,visit()) //遍历线性表:依次对L的每个元素调用visit()
 //Status AppendBefore(List &L, ElemType e) //头插元素
 //Status AppendAfter(List &L, ElemType e) //尾插元素
 */
-Status AppendBefore(LinkList &L, ElemType e){ //头插元素
-	PLNode s=(LNode *)malloc(sizeof(LNode)); //开辟新节点
-	s->data = e; //新节点 数据赋值	
-	//头插元素 核心
-	//☊ ♎ //☌ ♂
-	s->next = L->next; //☊ ♎
-	L->next = s; //☌ ♂
-}
-Status AppendAfter(LinkList &L, ElemType e){ //尾插元素
-	PLNode s=(LNode *)malloc(sizeof(LNode));//开辟新节点
-	s->data = e; //新节点 数据赋值
-	
-	LinkList p;//tempPtr
-	p=L;
-	while(p->next != NULL){ //找end的precursor前驱
-		P=P->next; //找end的precursor前驱，Ptr++ move 
-	}
-	//尾插元素 核心
-	//☊ ♎ //☌ ♂
-	P->next = s; //☊ ♎
-	s->next = NULL; //☌ ♂
-}
 /*---------------线性单链表----------------
 单链表 初始化 创建 头插法 尾插法 插入 删除 查找 合并 长度
 */
 typedef struct LNode { //封装 结构体 链表的结点==数据元素Elem,结点的指针==链表==数据对象Obj
 	ElemType data; //数据Domain ,数据项item
 	struct LNode *next; //指针,引用Reference	
-}LNode, *LinkList,*PLNode;//类型重定义struct LNode为LNode，类型重定义 LNode的*指针 为LinkList
+}LNode, *LinkList, *PLNode;//类型重定义struct LNode为LNode，类型重定义 LNode的*指针 为LinkList
 Status InitList(LinkList &L) { //初始化线性链表 产生一个头结点。单链表指针在外面传进来	
 	//head
 	//☒→NULL☞
@@ -213,7 +191,78 @@ LNode *LocateElem_Link_Yan(LinkList L, ElemType e) {
 	while (p&&p->data != e) { p = p->next };//if(!p) p=null;
 	return p;//时间复杂度O(n)
 }
-void MergeList_Link_Tan(LinkList &La, LinkList &Lb) {
+
+int ListLength_Link(struct LNode *head) {//求线性单链表长度
+	struct LNode *p = head->next;//LNode1
+	int len = 0;
+	while (p) {
+		len++;
+		p = p->next;
+	}
+	head->data = len; //存储长度到头结点的数据域head->data
+	return len;
+}
+Status GetElem_Link_Yan(LinkList L, int i, ElemType &e) {
+	//取出元素,i是序号,e为值
+	//L为带头结点的单链表的头节点
+	//L-next为 带头结点的单链表的 头指针 指向第一个结点LNode1
+	//当第i个元素存在时，将值返回给e,返回TRUE, 否则FALSE
+	LinkList p = L->next;//初始化，p指向第一个结点，
+	int j = 1;//j为计数器
+	while (p && j < i) { //p指针非空，j计数器<i，所以循环的终点是i
+		p = p->next; ++j;//指针后移一个,计数器+1一个
+	}
+	if (!p || j > i) return FALSE;//第i个元素不存在
+	e = p->data;//取出第i个元素，值为e
+	return TRUE;
+}//GetElem_Link_Yan
+
+void BackBefore(LNode *s, LNode *q) { //Link Cirle, s linke before LNode q
+	P = s;
+	while (p->next != q) p = ->next;
+	p->next = s;
+}//BackBefore
+void BackBeforeAfterAgain(LNode *pa, LNode *pb) { //Link Cirle,twice，
+	//pa,pb finger LinkStack's two node. a link before b, b linke befor a.
+	BackBefore(pa, pb);
+	BackBefore(pb, pa);
+}//BackBeforeAfterAgain
+
+Status LinkList_DelBetween(LinkList &L, ElemType mink, ElemType maxk) {
+	//删除大于mink小于maxk的所有元素，L是带头结点的单链表
+	P = L; //temp Ptr P finger L's head, then P finger mink's 前驱。
+	while (P->next != NULL && P->next->data <= mink) //then P finger mink's 前驱。
+		P = P->next;//find the node before mink //找出第last个大于mink的元素
+	if (P->next = NULL) return FALSE; //mean mink's 前驱 not 存在 ，( !P->next )
+	Q = P->next; //temp Ptr Q finger mink
+	while (!Q && (Q->data < maxk)) { //DestroyList()
+		P->next = Q->next; //☊
+		free(Q); //✄
+		Q = P->next; //☌ ♂
+	}
+}//LinkList_BetweenDel
+Status AppendBefore(LinkList &L, ElemType e) { //头插元素
+	PLNode s = (LNode *)malloc(sizeof(LNode)); //开辟新节点
+	s->data = e; //新节点 数据赋值
+
+	s->next = L->next; //☊ ♎ //头插元素 核心//☊ ♎ //☌ ♂//head 不存数据
+	L->next = s; //☌ ♂
+}
+Status AppendAfter(LinkList &L, ElemType e) { //尾插元素
+	PLNode s = (LNode *)malloc(sizeof(LNode));//开辟新节点
+	s->data = e; //新节点 数据赋值
+
+	LinkList p;//tempPtr
+	p = L;
+	while (p->next != NULL) { //找end的precursor前驱
+		P = P->next; //找end的precursor前驱，Ptr++ move 
+	}
+	//尾插元素 核心
+	//☊ ♎ //☌ ♂
+	P->next = s; //☊ ♎
+	s->next = NULL; //☌ ♂
+}
+void MergeLinkList_ToOld_ASC_Tan_4StarHard(LinkList &La, LinkList &Lb) {
 	//已知La和Lb升序排列
 	//合并得到新的单链表Lc,Lc的元素也按值非递减排列
 	LinkList pa, pb, p, q;
@@ -240,112 +289,97 @@ void MergeList_Link_Tan(LinkList &La, LinkList &Lb) {
 		q->next = pb; //插入所有剩余的pb
 	}
 }//MergeList_Link_Yan
-int ListLength_Link(struct LNode *head) {//求线性单链表长度
-	struct LNode *p = head->next;//LNode1
-	int len = 0;
-	while (p) {
-		len++;
-		p = p->next;
+Status MergeLinkList_ToOld_DSC_3ptr_Tan_4StarHard(LinkList &A, &B, &C) {
+	/*
+	//合并得到新的单链表Lc，降序
+	//已知La和Lb升序排列
+	//合并得到新的单链表Lc,Lc的元素 按值
+	//非递增排列LinkList p, q, pc;
+	//C必须 使用A，B原来的结点空间
+	*/
+	LinkList p, q; //p & q is TempPtr。必须前提，head不存数据 //neccesory,head no repos data
+	LinkList s; //s is TempPtr. finger New Node of C.//s作为c的TempPtr	
+	p = A->next; q = B->next; //p q Node1。//p & q 必须始终作为 A & B 的FirstNode元素
+	C = B; C->next = NULL; free(A); //InitList(Lc),C use B Repos,C is head
+	//MergeList_ToOld_DSC降序合并,思路，比较大小后，把数值小的节点链接到 单链表C上面
+	while (p && q) { //同时存在
+		if (p->data <= q->data) { //curent min is p
+			s = p; p = p->next; //s finger curent min //p++
+		}
+		else { //(p->data > q->data) //curent min is q
+			s = q; q = q->next; //s finger curent min //q++
+		}
+		s->next = C->next; //s is current node,头插
+		C->next = s; //s node Head AppendBefore() ListC. 头插
 	}
-	head->data = len; //存储长度到头结点的数据域head->data
-	return len;
-}
-Status GetElem_Link_Yan(LinkList L, int i, ElemType &e) {
-	//取出元素,i是序号,e为值
-	//L为带头结点的单链表的头节点
-	//L-next为 带头结点的单链表的 头指针 指向第一个结点LNode1
-	//当第i个元素存在时，将值返回给e,返回TRUE, 否则FALSE
-	LinkList p = L->next;//初始化，p指向第一个结点，
-	int j = 1;//j为计数器
-	while (p && j < i) { //p指针非空，j计数器<i，所以循环的终点是i
-		p = p->next; ++j;//指针后移一个,计数器+1一个
+	if (!p) p = q; //p is null
+	while (p) { // q is null ,q end. p append C
+		s = p; // s finger cur
+		p = p->next; //p++ move
+		s - next = C->next; //s.next finger C.next<==> C node1,头插
+		C->next = s; //头插
 	}
-	if (!p || j > i) return FALSE;//第i个元素不存在
-	e = p->data;//取出第i个元素，值为e
-	return TRUE;
-}//GetElem_Link_Yan
-void BackBefore(LNode *s,LNode *q){ //Link Cirle, s linke before LNode q
-	P=s;
-	while (p->next!=q) p=->next;
-	p->next=s;
-}//BackBefore
-void BackBeforeAfterAgain(LNode *pa,LNode *pb){ //Link Cirle,twice，
-	//pa,pb finger LinkStack's two node. a link before b, b linke befor a.
-	BackBefore(pa,pb);
-	BackBefore(pb,pa);
-}//BackBeforeAfterAgain
-Status LinkList_DelBetween(LinkList &L, ElemType mink, ElemType maxk) {
-	//删除大于mink小于maxk的所有元素，L是带头结点的单链表
-	P=L; //temp Ptr P finger L's head, then P finger mink's 前驱。
-	while(P->next!=NULL && P->next->data<=mink) //then P finger mink's 前驱。
-		P=P->next;//find the node before mink //找出第last个大于mink的元素
-	if(P->next=NULL) return FALSE; //mean mink's 前驱 not 存在 ，( !P->next )
-	Q=P->next; //temp Ptr Q finger mink
-	while(!Q && (Q->data < maxk)){ //DestroyList()
-		P->next = Q->next; //☊
-		free(Q); //✄
-		Q = P->next; //☌ ♂
+	/*
+	//---------------
+	while (p && q) { //p,q 存在
+		if (p->data <= q->data) { //如果小于=，pc指针指向p
+			AppendBefore(pc, p->data);
+			v = p;//v下移 
+			p = p->next;//p下移
+		}
+		else { //如果>
+			   //如果 且 只有 在    p->data > q->data,则将q插入到p的前面
+			   //转化 判断条件 如果 q->data > p->data ,则将q插入到p的前面
+			w = q;// w 下移
+			q = q->next;//q下移
+			w->next = p;//q插入到p的前面
+			v->next = w;
+			v = w;//v必须始终作为p的前驱元素,因此w赋值给v
+		}//2个结合起来就是小者排前面，这个代码写的真差，不是人类看的,因为C在A和B只见跳来跳去，临时pc变量拆成2个就容易理解了
+	}//while
+	if (q) { //q存在
+		v->next = q; //插入所有剩余的q
 	}
-}//LinkList_BetweenDel
-Status MergeList_ToNew_DSC_List_Guan(LinkList &La, LinkList &Lb,LinkList &Lc){ //合并得到新的单链表Lc，降序
+	//-------------
+	*/
+}//MergeLinkList_ToOld_DSC_3ptr_Tan
+Status MergeLinkList_ToNew_DSC_6Ptr_Guan_3StarHard(LinkList La, LinkList Lb, LinkList &Lc) { //合并得到新的单链表Lc，降序
 	//已知La和Lb升序排列
 	//合并得到新的单链表Lc,Lc的元素也按值非递减排列
 	LinkList pa, pb, pc;
-	LinkList p, q;
+	LinkList p, t, u;
+
 	pa = La->next;
 	pb = Lb->next;
-	pc = InitList(Lc);//Lc 开辟内存空间
-	
-	q = La;//存放临时指针,q就是pa的前驱元素,q必须始终作为pa的前驱元素
-	t = Lb;
+	pc = Lc->next;
+
+	q = La; //存放临时指针,q就是pa的前驱元素,q必须始终作为pa的前驱元素
+	t = Lb; //存放临时指针,t就是pb的前驱元素,t必须始终作为pb的前驱元素
+	u = Lc; //存放临时指针,u就是pc的前驱元素,u必须始终作为pc的前驱元素
+
 	while (pa && pb) { //pa,pb 存在
 		if (pa->data <= pb->data) { //如果小于=，pc指针指向pa
-			AppendBefore(pc, pa->data);
+			AppendBefore(pc, pa->data);//apd c
 			q = pa;//q下移 
 			pa = pa->next;//pa下移
 		}
-		else { //如果>
+		else { //如果 pb->data < pa->data
 			//如果 且 只有 在    pa->data > pb->data,则将pb插入到pa的前面
 			//转化 判断条件 如果 pb->data > pa->data ,则将pb插入到pa的前面
+			AppendBefore(pc, pb->data);//apd c
 			t = pb;// t 下移
 			pb = pb->next;//pb下移
-			t->next = pa;//pb插入到pa的前面
-			q->next = t;
-			q = t;//q必须始终作为pa的前驱元素,因此t赋值给q
+			/*
+			//t->next = pa;//pb插入到pa的前面
+			//q->next = t;
+			//q = t;//q必须始终作为pa的前驱元素,因此t赋值给q
+			*/
 		}//2个结合起来就是小者排前面，这个代码写的真差，不是人类看的,因为C在A和B只见跳来跳去，临时pc变量拆成2个就容易理解了
 	}//while
-	if (pb) { //pb存在
-		q->next = pb; //插入所有剩余的pb
+	if (pa) { //pb存在
+		u->next = pa; //插入所有剩余的pb
 	}
-}//MergeList_To_DSC_List
-Status MergeList_ToNew_DSC_List_Tan(LinkList &La, LinkList &Lb,LinkList &Lc){ //合并得到新的单链表Lc，降序
-	//已知La和Lb升序排列
-	//合并得到新的单链表Lc,Lc的元素也按值非递减排列
-	LinkList pa, pb, pc;
-	LinkList p, q;
-	pa = La->next;
-	pb = Lb->next;
-	pc = InitList(Lc);//Lc 开辟内存空间
-	
-	q = La;//存放临时指针,q就是pa的前驱元素,q必须始终作为pa的前驱元素
-	t = Lb;
-	while (pa && pb) { //pa,pb 存在
-		if (pa->data <= pb->data) { //如果小于=，pc指针指向pa
-			AppendBefore(pc, pa->data);
-			q = pa;//q下移 
-			pa = pa->next;//pa下移
-		}
-		else { //如果>
-			//如果 且 只有 在    pa->data > pb->data,则将pb插入到pa的前面
-			//转化 判断条件 如果 pb->data > pa->data ,则将pb插入到pa的前面
-			t = pb;// t 下移
-			pb = pb->next;//pb下移
-			t->next = pa;//pb插入到pa的前面
-			q->next = t;
-			q = t;//q必须始终作为pa的前驱元素,因此t赋值给q
-		}//2个结合起来就是小者排前面，这个代码写的真差，不是人类看的,因为C在A和B只见跳来跳去，临时pc变量拆成2个就容易理解了
-	}//while
 	if (pb) { //pb存在
-		q->next = pb; //插入所有剩余的pb
+		u->next = pb; //插入所有剩余的pb
 	}
 }//MergeList_To_DSC_List

@@ -14,6 +14,7 @@
 #define LIST_INCREMENT = 10;//空间分配增量
 typedef int Status;
 typedef int ElemType;
+typedef int size_t;
 /*
 #define Node ElemType
 typedef struct Node{}Node,*NodePtr; //元素类型重定义指针
@@ -167,8 +168,29 @@ Status GetElem(SqList L, int i, ElemType *e) { //获取元素
 	*e = L.data[i - 1];
 	return TRUE;
 }
+int LocateElem(SqList L, ElemType e) {
+	/*成功返回位序 下标法
+	函数名：LocateElem()
+	参数：sql L, ElemType element
+	初始条件：线性表L已存在
+	功能：返回顺序表中第一个与element相等的元素的位序
+	返回值：若L中存在与element相等的元素，则返回 第一个符合条件的元素位序
+	若不存在，则返回0*/
+	size_t i; //controller elem，limit i
+	//ElemType *p; //temp Ptr p //指针法only
+	p = L.elem; //temp Ptr p
+	for (i = 0; i < L.length; i++) {
+		if (L.elem[i] == e) { //*L.elem == E 指针法only
+			L.elem = p;
+			return i + 1;//返回i+1就是返回order,
+		}
+		//L.elem++; //指针法only
+	}
+	//L.elem = p;//重置指针 //指针法only
+	return FALSE;//遍历线性表后 没有找到与element相等的元素
+}
 Status LocateElem_OutOrderOrBool(sql &L, ElemType E) {
-
+	//指针法
 	//成功返回位序 或者 布尔值FALSE
 	/*函数名：LocateElem()
 	参数：sql L, ElemType element
@@ -176,10 +198,10 @@ Status LocateElem_OutOrderOrBool(sql &L, ElemType E) {
 	功能：返回顺序表中第一个与element相等的元素的位序
 	返回值：若L中存在与element相等的元素，则返回 第一个符合条件的元素位序
 	若不存在，则返回0*/
-	int i;
-	ElemType *p;
-	p = L.elem;
-	for (i = 1; i <= L.length; i++)
+	size_t i; //controller limit i
+	ElemType *p; //temp Ptr p
+	p = L.elem; //temp Ptr p
+	for (size_t i = 1; i <= L.length; i++)
 	{
 		if (*L.elem == E) {
 			L.elem = p;
@@ -229,7 +251,7 @@ Status Compare(ElemType e1, ElemType e2) {
 }
 typedef int(*LocateElem_ptr)(ElemType, ElemType);//定义声明一个函数指针,类似于委托
 
-void union(List &La, List Lb) {
+void Union(List &La, List Lb) {
 	//线性表 求并集 这个是伪代码，下面的MergeList是真代码
 	/*
 	定义声明一个函数指针,类似于委托
@@ -245,12 +267,12 @@ void union(List &La, List Lb) {
 	Lb_len = ListLength(Lb);
 	for (i = 1; i <= Lb_len; i++) {
 		ElemType e = GetElem(Lb, i, e);
-		if (!LocateElem(La, e, equal)) {
+		if (!LocateElem(La, e, equal())) {
 			ListInsert(La, ++La_len, e);
 		}
 	}//for
-}//union
-void MergeList(List La, List Lb, List &Lc) {
+}//Union
+void MergeSqList(List La, List Lb, List &Lc) {
 	//union的具体实现
 	//合并顺序表，并且升序排序 到&Lc
 	pa = La.elem; pb = Lb.elem;//取头部指针a,b
@@ -269,28 +291,28 @@ void MergeList(List La, List Lb, List &Lc) {
 	}
 	while (pa <= pa.last) { *pc++ = *pa++; }//剩余元素a存入c 
 	while (pb <= pb.last) { *pc++ = *pb++; }//剩余元素b存入c
-}//MergeList
-
-void different(List La, List Lb, List &Lc) { //求差集
-//求差集
+}//MergeSqList
+void SetDifference(List La, List Lb, List &Lc) { 
+	//求差集	
+	//Set_Difference,  A - B .
 	La_len = ListLength(La);
 	Lb_len = ListLength(Lb);
 	ListPtr Lc = (SqList *)malloc(LIST_INIT_SIZE * sizeof(SqList));
 	int LcLastPtr = 0;//temp LcLastPtr指针，指向线性表尾部
 
 	for (i = 1; i <= Lb_len; i++) {
-		ElemType e = GetElem(Lb, i, e);
-		if (!LocateElem(La, e, equal)) { //La[i]!=Lb[i]
+		ElemType e = GetElem(La, i, e);
+		if (!LocateElem(Lb, e, equal)) { //La[i]!=Lb[i]
 			ListAppend(Lc, Lc[++LcLastPtr], e);// Lc Append data e.
 		}
 	}//end for
-}
+}//Set_Difference
 void ListAppend(List La, ElemType e) { //尾部插入元素,尾插，如果有个last指针，就很容易了
 	int maxlen = ListLength_Sq(La);
 	int lastPtr = maxlen - 1;
 	La[lastPtr + 1] = e;
 }
-void exchange(SqList &L, int m, int n) {
+void Exchange(SqList &L, int m, int n) {
 	//线性表交换前m个元素和后n个元素 整体互换
 	SqList w;//temp ptr
 	int i, j;
@@ -315,6 +337,38 @@ int ListLength_Sq(SqList L) { //求线性表的长度
 	return L.length;
 }
 
+Status MergeSqList_Union(List La, List Lb, List &Lc) {
+	//union的具体实现
+	//合并顺序表，并且升序排序 到&Lc
+	pa = La.elem; pb = Lb.elem;//取头部指针a,b
+	Lc.listsize = Lc.length = La.length + Lb.length;
+	pc = Lc.elem = (ElemType*)malloc(Lc.listsize * sizeof(ElemType));//取指针，分配内存
+	if (!Lc.elem) exit(OVERFLOW);//分配内存失败
+	pa.last = La.elem + La.length - 1;//取尾部指针a
+	pb.last = Lb.elem + Lb.length - 1;//取尾部指针b
+	while (pa <= pa.last && pb <= pb.last) { //开始合并
+		if (*pa <= *pb) {
+			*pc++ = *pa++;//a存入c
+		}
+		else {
+			*pc++ = *pb++;//b存入c
+		}
+	}
+	while (pa <= pa.last) { *pc++ = *pa++; }//剩余元素a存入c 
+	while (pb <= pb.last) { *pc++ = *pb++; }//剩余元素b存入c
+	return TRUE;
+}//MergeSqList_Union
+
+Status Sq_Detete_In_A_By_B_Inter_C(SqList &A, SqList B, SqList C) {
+	//删除A中满足条件的元素：同时在B/C中出现的元素
+	ElemType e; //temp data
+	for (size_t i = 0; i < length; i++) {
+		e = A.elem[i];
+		if ((LocateElem(B, e)) && (LocateElem(C, e))) {
+			ListDelete(A, i + 1);
+		}//if
+	}//for
+}//Sq_Detete_In_A_By_B_Inter_C
 
 
 

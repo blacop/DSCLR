@@ -184,7 +184,7 @@ Status ListDelete_Link_Yan(LinkList &L, int i, ElemType &e) { //在带head的单
 	e = q->data; //取出 值为e
 	free(q);//返回值，释放空间
 }
-LNode *LocateElem_Link_Yan(LinkList L, ElemType e) {
+LNode *LocateLinkElem(LinkList L, ElemType e) {
 	//在L中找到第一个值和e相同的结点，返回其地址，若不存在，返回空值NULL。
 	if (!L) return NULL;
 	p = L;
@@ -202,7 +202,7 @@ int ListLength_Link(struct LNode *head) {//求线性单链表长度
 	head->data = len; //存储长度到头结点的数据域head->data
 	return len;
 }
-Status GetElem_Link_Yan(LinkList L, int i, ElemType &e) {
+Status GetElem_Link_Yan_OutBool(LinkList L, int i, ElemType &e) {
 	//取出元素,i是序号,e为值
 	//L为带头结点的单链表的头节点
 	//L-next为 带头结点的单链表的 头指针 指向第一个结点LNode1
@@ -216,6 +216,20 @@ Status GetElem_Link_Yan(LinkList L, int i, ElemType &e) {
 	e = p->data;//取出第i个元素，值为e
 	return TRUE;
 }//GetElem_Link_Yan
+ElemType GetElem_Link_OutData_Guan(LinkList L, int i) {
+	//取出元素,i是序号,e为值
+	//L为带头结点的单链表的头节点
+	//L-next为 带头结点的单链表的 头指针 指向第一个结点LNode1
+	//当第i个元素存在时，将值返回给e,返回TRUE, 否则FALSE
+	LinkList p = L->next;//初始化，p指向第一个结点，
+	int j = 1;//j为计数器
+	while (p && j < i) { //p指针非空，j计数器<i，所以循环的终点是i
+		p = p->next; ++j;//指针后移一个,计数器+1一个
+	}
+	if (!p || j > i) return FALSE;//第i个元素不存在
+	ElemType e = p->data;//取出第i个元素，值为e
+	return e;
+}
 
 void BackBefore(LNode *s, LNode *q) { //Link Cirle, s linke before LNode q
 	P = s;
@@ -324,7 +338,7 @@ Status MergeLinkList_ToOld_DSC_3ptr_Tan_4StarHard(LinkList &A, &B, &C) {
 	while (p && q) { //p,q 存在
 		if (p->data <= q->data) { //如果小于=，pc指针指向p
 			AppendBefore(pc, p->data);
-			v = p;//v下移 
+			v = p;//v下移
 			p = p->next;//p下移
 		}
 		else { //如果>
@@ -383,3 +397,130 @@ Status MergeLinkList_ToNew_DSC_6Ptr_Guan_3StarHard(LinkList La, LinkList Lb, Lin
 		u->next = pb; //插入所有剩余的pb
 	}
 }//MergeList_To_DSC_List
+
+Status MergeLinkList_ToNew_Union_ASC_6Ptr_Guan_3StarHard(LinkList La, LinkList Lb, LinkList &Lc) { //合并得到新的单链表Lc，求并集																				 //合并得到新的单链表Lc,Lc的元素也按值非递减排列
+	LinkList pa, pb, pc;
+	LinkList p, t, u;
+	pa = La->next;
+	pb = Lb->next;
+	pc = Lc->next;
+	q = La; //存放临时指针,q就是pa的前驱元素,q必须始终作为pa的前驱元素
+	t = Lb; //存放临时指针,t就是pb的前驱元素,t必须始终作为pb的前驱元素
+	u = Lc; //存放临时指针,u就是pc的前驱元素,u必须始终作为pc的前驱元素
+	ElemType e;// temp data
+	while (pa && pb) { //pa,pb 存在
+		if (pa->data <= pb->data) { //如果小于=，pc指针指向pa
+			e = pa->data;
+			if (!LocateLinkElem(Lc, e)) AppendAfter(pc, pa->data);//apd c
+			q = pa;//q下移 
+			pa = pa->next;//pa下移
+		}
+		else {
+			/*
+			//如果 pb->data < pa->data
+			   //如果 且 只有 在    pa->data > pb->data,则将pb插入到pa的前面
+			   //转化 判断条件 如果 pb->data > pa->data ,则将pb插入到pa的前面
+			*/
+			e = pa->data;
+			if (!LocateLinkElem(Lc, e)) AppendAfter(pc, pb->data);//apd c
+			t = pb;// t 下移
+			pb = pb->next;
+			/*
+			pb下移
+			//t->next = pa;//pb插入到pa的前面
+			//q->next = t;
+			//q = t;//q必须始终作为pa的前驱元素,因此t赋值给q
+			*/
+		}//2个结合起来就是小者排前面，这个代码写的真差，不是人类看的,因为C在A和B只见跳来跳去，临时pc变量拆成2个就容易理解了
+	}//while
+	if (pa) { //pb存在
+		u->next = pa; //插入所有剩余的pb
+	}
+	if (pb) { //pb存在
+		u->next = pb; //插入所有剩余的pb
+	}
+}//MergeLinkList_ToNew_Union_ASC_6Ptr_Guan_3StarHard
+Status MergeLinkList_ToNew_Intersection_ASC_6Ptr_Guan_3StarHard(LinkList La, LinkList Lb, LinkList &Lc) { //合并得到新的单链表Lc，求交集																				 //合并得到新的单链表Lc,Lc的元素也按值非递减排列
+	LinkList pa, pb, pc;
+	LinkList p, t, u;
+	pa = La->next;
+	pb = Lb->next;
+	pc = Lc->next;
+	q = La; //存放临时指针,q就是pa的前驱元素,q必须始终作为pa的前驱元素
+	t = Lb; //存放临时指针,t就是pb的前驱元素,t必须始终作为pb的前驱元素
+	u = Lc; //存放临时指针,u就是pc的前驱元素,u必须始终作为pc的前驱元素
+	ElemType e;// temp data
+	while (pa && pb) { //pa,pb 存在
+		if (pa->data <= pb->data) { //如果小于=，pc指针指向pa
+			e = pa->data;
+			if (LocateLinkElem(La, e) && LocateLinkElem(Lb, e)) AppendAfter(pc, pa->data);//apd c
+			q = pa;//q下移 
+			pa = pa->next;//pa下移
+		}
+		else {
+			/*
+			//如果 pb->data < pa->data
+			//如果 且 只有 在    pa->data > pb->data,则将pb插入到pa的前面
+			//转化 判断条件 如果 pb->data > pa->data ,则将pb插入到pa的前面
+			*/
+			e = pa->data;
+			if (LocateLinkElem(La, e) && LocateLinkElem(Lb, e)) AppendAfter(pc, pb->data);//apd c
+			t = pb;// t 下移
+			pb = pb->next;
+			/*
+			pb下移
+			//t->next = pa;//pb插入到pa的前面
+			//q->next = t;
+			//q = t;//q必须始终作为pa的前驱元素,因此t赋值给q
+			*/
+		}//2个结合起来就是小者排前面，这个代码写的真差，不是人类看的,因为C在A和B只见跳来跳去，临时pc变量拆成2个就容易理解了
+	}//while
+	if (pa) { //pb存在
+		u->next = pa; //插入所有剩余的pb
+	}
+	if (pb) { //pb存在
+		u->next = pb; //插入所有剩余的pb
+	}
+}//MergeLinkList_ToNew_Union_ASC_6Ptr_Guan_3StarHard
+
+Status LL_Detete_In_A_By_B_Inter_C(SqList &A, SqList B, SqList C) {
+	//删除A中满足条件的元素：同时在B/C中出现的元素
+	PLNode p = A; //temp Ptr
+	PLNode q; //temp Ptr for free() node，临时指针for删除结点
+	ElemType e; //temp data
+	while (p->next != NULL) {
+		e = p->next->data; //赋值
+		if ((LocateElem(B, e) != 0) && (LocateElem(C, e) != 0)) {
+			q = p->next; //q finger p head after node which node1
+			p->next = q->next; //p+2 move
+			ListDelete(q); //dispose(q)，ListDelete(q);
+		}
+		else p = p->next;//p++ move
+	}//while
+
+	/* Sqlist only
+	for (size_t i = 0; i < length; i++) {
+		e = A.elem[i];
+		if ((LocateElem(B, e)) && (LocateElem(C, e))) {
+			ListDelete(A, i + 1);
+		}//if
+	}//for
+	*/
+}//Sq_Detete_In_A_By_B_Inter_C
+
+Status ReverseLink_InOld(LinkList &h) {
+	//就地逆置
+	//假设在头结点，H为指向头结点的指针
+	//只需将头结点后结点依次加入新链，
+	//加入总是放在新链的首元素位置上
+	PLNode p, q;
+	p = h->next;  
+	h->next = NULL; //h finger head
+	while (t != NULL) {
+		q = p;//q前驱
+		p = p->next;//p后继	 
+		q->next = h->next;//头插法
+		h->next = q;
+	}
+	return TRUE;
+}//ReverseLink_InOld

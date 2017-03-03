@@ -143,9 +143,8 @@ void ReverseQueue(SqQueue &Q) {
 }
 //---------
 //Special
-//Fabonacci
-
 Status Fabonacci(int K, SqQueue &Q; int MAX) {
+	//循环队列
 	int f;//f is sum;
 	Q.base = (QElemType *)malloc(K * sizeof(QElemType));//基地址
 	if (!Q.base) exit(OVERFLOW);
@@ -158,3 +157,44 @@ Status Fabonacci(int K, SqQueue &Q; int MAX) {
 		f = Q.base[i] + Q.base[j];//math function
 	}//while
 }//Fabonacci
+Status EnQueueOS(SqQueue &Q, QElemType e) {
+	//EnQueueOSTaskManager
+	//循环队列
+	//插入受限，小于平均时间入队头,否则入队尾
+	QElemType t; //平均时间
+	if ((Q.rear + 1) % MAX_QSIZE == Q.front) {
+		return FALSE;//队列满
+	}
+	t = (Q.base[Q.front] + Q.base[(Q.rear - 1) % MAX_QSIZE]) / 2;//计算平均时间
+	if (e < t) {
+		Q.front = (Q.front - 1 + MAX_QSIZE) % MAX_QSIZE;//入队头
+		Q.base[Q.front] = e;
+	}
+	else {
+		Q.base[Q.rear] = e;//入队尾
+		Q.rear = (Q.rear + 1) % MAX_QSIZE;
+	}
+	return TRUE;
+}//EnQueueOSTaskManager
+Status EnQueueTail(SqQueue &Q, QElemType e) { //入队列 压队列 加入一个队列顶元素 7
+										  //循环指针++ move 必须求模 (rear+1) % MAX_QSIZE
+	if (QueueFull()) {
+		return FALSE;
+	}
+	else {
+		Q.base[Q.rear] = e;
+		Q.rear = (Q.rear + 1) % MAX_QSIZE; //rear++ move//关键，要取模
+		return TRUE;
+	}
+}
+Status EnQueueHead(SqQueue &Q, QElemType e) { //入队列 压队列 加入一个队列顶元素 7
+										  //循环指针++ move 必须求模 (rear+1) % MAX_QSIZE
+	if (QueueFull()) {
+		return FALSE;
+	}
+	else {
+		Q.front = (Q.front - 1 + MAX_QSIZE) % MAX_QSIZE;//入队头
+		Q.base[Q.front] = e;
+		return TRUE;
+	}
+}

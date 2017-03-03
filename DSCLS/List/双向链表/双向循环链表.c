@@ -6,12 +6,15 @@
 #define FALSE -1
 #define NULL 0
 #define OVERFLOW -2
-#define ElemType int
-#define Status int
-typedef int ElemType
-typedef int Status
-#define LEN sizeof(DuLNode)
-#define MLC (LinkList)malloc(sizeof(DuLNode))
+//#define ElemType int
+//#define Status int
+typedef int ElemType;
+typedef int Status;
+typedef int size_t;
+/*
+#define LEN sizeof(Node)
+#define MLC (Node *)malloc(sizeof(Node))
+*/
 /*
 //线性表的基本操作列表
 InitList(&L) //初始化线性表L
@@ -55,7 +58,7 @@ Status ListInsert_Dul_Tail_Tan(DuLinkList &L, int i, ElemType e) {
 	int j = 0; //计数器
 	DuLinkList p = L; //p作为工作目标指针
 	DuLinkList s;//新结点
-	while (j<i - 1 && p) { //寻找第i-1个元素，插入第i-1个元素后面
+	while (j < i - 1 && p) { //寻找第i-1个元素，插入第i-1个元素后面
 		p = p->next; //移动指针
 		j++; //计数器+1
 	}
@@ -97,7 +100,7 @@ Status ListInsert_Dul_Head_Tan(DuLinkList &L, int i, ElemType e) {
 	(p->prior)->next = s;
 	p->prior = s;
 }
-Status ListDelete_Dul(DuLinkList &L,int i,ElemType e) {
+Status ListDelete_Dul(DuLinkList &L, int i, ElemType &e) {
 	//在带头结点的的双向循环链表中的第i个位置 删除元素e
 	int j = 0; //计数器
 	DuLinkList p = L; //p作为工作目标指针
@@ -116,4 +119,89 @@ Status ListDelete_Dul(DuLinkList &L,int i,ElemType e) {
 	nex->prior = pre->next;
 	free(s);
 	return TRUE;
+}
+
+Status LocateElem(DuLinkList &L, ElemType x) {
+	//定位Elem元素,成功返回sequence，失败返回FALSE
+	PDuLNode p, q;
+	size_t sequence = 1;
+	p = L->next;
+	while (p != L && p->data<>x) {//find x node, L mean cirle end a round,L表示转了一圈
+		p = p->next;
+		sequence++;
+	}
+	if p = L return FALSE;//p = L mean cirle end a round, L表示转了一圈
+	return sequence;
+}
+
+//----------------
+//上交大，TV 8/29 ,00:36:08/01:19:27 . t 2.38
+//Special Node 自动调频
+typedef struct DuLNode {
+	ElemType data;
+	int freq; //频度
+	struct DuLNode *prior;//前驱
+	struct DuLNode *next;//后继
+}DuLNode, *DuLinkList, *PDuLNode;
+
+Status LocateThenFreq_5star(DuLinkList &L, ElemType x) {
+	//LocateThenFreq 自动调频,按频度降序排序
+	/*
+	1.找e的sequence
+	2.找e的后继
+	3.将p结点插入到 e的后继 q结点 后面
+	*/
+	PDuLNode p, q;
+	p = L->next;
+	while (p != L && p->data<>x) //找到x结点，存p，find x node,p = L mean cirle end a round,L表示转了一圈
+		p = p->next; //P++ MOVE，p指向x
+	if p = L return FALSE;//p = L mean cirle end a round, L表示转了一圈
+	p->freq++; //调频+1， 自动调频
+	if ((p->prior != L) && (p->prior->freq < p->freq)) { //pri 非head,&& pri.freq < cur.freq
+		q = p->prior; // q points cur's pri，q指向 当前结点的前驱
+		q->next = p->next;	//将p结点从链表中断开
+		p->next->prior = q; //将p结点从链表中断开
+		while ((q<>L) && (q->freq < p->freq)) 
+			//找到first第1个<小于p->freq频度的结点，降序排列，小于的频度在p的后面
+			//所以是找p后面的结点,存q , q的功能发生了变化
+			q = q->prior;	//找到p结点应该链接的位置,Q-- MOVE
+		p->next = q->next;	//将p结点插入到q结点后面
+		p->prior = q;		//将p结点插入到q结点后面
+		q->next->prior = p;	//将p结点插入到q结点后面
+		q->next = p;		//将p结点插入到q结点后面
+	}//if
+}//LocateThenFreq
+
+Status AppendAfterElemSuceedByElem(DuLinkList &L, ElemType e,*LocateElem(PDuLNode L, ElemType e)) {
+	//好像写这个方法 很多余
+	/*
+	1.找e的sequence
+	2.找e的后继 
+	3.将p结点插入到 e的后继 q结点 后面
+	这真stupid
+	*/
+	PDuLNode p, q;
+	size_t sequence;
+	while (p != L && p->data<>x) //找到x结点，存p，find x node,p = L mean cirle end a round,L表示转了一圈
+		p = p->next; //P++ MOVE，p指向x
+	if p = L return FALSE;//p = L mean cirle end a round, L表示转了一圈
+	
+	sequence = LocateElem(PDuLNode L, ElemType e);//定位
+	while ((q<>L) && (q->data <> e))
+		//找到first第1个<小于p->freq频度的结点，降序排列，小于的频度在p的后面
+		//所以是找p后面的结点,存q , q的功能发生了变化
+		q = q->prior;	//找到p结点应该链接的位置,Q-- MOVE
+	p->next = q->next;	//将p结点插入到q结点后面
+	p->prior = q;		//将p结点插入到q结点后面
+	q->next->prior = p;	//将p结点插入到q结点后面
+	q->next = p;		//将p结点插入到q结点后面
+}
+
+Status DisConnectNode(DuLinkList &L, *LocateElem(PDuLNode L, ElemType e)) {
+	//好像写这个方法 很多余
+	PDuLNode p, q;
+	size_t sequence = LocateElem(PDuLNode L, p);//定位
+	ListDelete_Dul(DuLinkList &L, sequence, ElemType &e);//删除
+	q->next = p->next; //将p结点从链表中断开
+	p->next->prior = q; //将p结点从链表中断开
 }

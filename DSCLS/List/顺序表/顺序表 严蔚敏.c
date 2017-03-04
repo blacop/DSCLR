@@ -104,7 +104,7 @@ Status ListInsert_Sq_Pointer(SqList &L, int i, ElemType e) {
 Status ListInsert_Sq_Pointer_Se(SqList &L, int i, ElemType e) { //插入线性表 使用指针 简化写法  不要新开辟内存
 	if (i<1 || i>L.length + 1) return FALSE;//i的合法值为1<=i<=ListLength_Sq(L)+1  (L),因为 index <==> i-1
 	if (L.length >= L.listsize) exit(OVERFLOW);//超出存储空间，报错退出
-	PElemType p,q;
+	PElemType p, q;
 	PElemType pos;
 	pos = L.elem[i - 1];
 	q = &(L.elem[i - 1]);//q为插入位置 指针

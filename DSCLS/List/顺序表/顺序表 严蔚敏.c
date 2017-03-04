@@ -6,15 +6,10 @@
 #define ERROR 0
 #define INFEASIBLE -1
 #define OVERFLOW -2
-/*
-#define Status int
+typedef int Status;
 #define ElemType int
-*/
 #define LIST_INIT_SIZE = 100;//表初始分配空间
 #define LIST_INCREMENT = 10;//空间分配增量
-typedef int Status;
-typedef int ElemType;
-typedef int size_t;
 /*
 #define Node ElemType
 typedef struct Node{}Node,*NodePtr; //元素类型重定义指针
@@ -57,7 +52,7 @@ endADT List
 typedef struct SqList { //封装一个线性表 为SqList
 	ElemType *elem;//存储空间，存放头地址,也可表示数组的名字 或地址  或第一个元素
 	int length;//线性表当前长度
-	int listSize;//当前存储容量
+	int listsize;//当前存储容量
 }SqList, List, *ListPtr;
 typedef ElemType *PElemType;//重定义指针
 Status InitList_Sq(SqList &L) {
@@ -65,7 +60,7 @@ Status InitList_Sq(SqList &L) {
 	L.elem = (ElemType *)malloc(LIST_INIT_SIZE * sizeof(ElemType));//分配内存，返回void*指针，类型强转一下
 	if (!L.elem) exit(OVERFLOW);//OVERFLOW是返回到OS的
 	L.length = 0;
-	L.listSize = LIST_INIT_SIZE;
+	L.listsize = LIST_INIT_SIZE;
 	return TRUE;
 }//InitList_Sq
 Status ListInsert_Sq_Pointer(SqList &L, int i, ElemType e) {
@@ -88,12 +83,12 @@ Status ListInsert_Sq_Pointer(SqList &L, int i, ElemType e) {
 		② ———↑
 	*/
 	if (i<1 || i>L.length + 1) return FALSE;//i的合法值为1<=i<=ListLength_Sq(L)
-	if (L.length >= L.listSize) { //当前存储空间已满，(realloc就是)增加内存分配，函数realloc()
+	if (L.length >= L.listsize) { //当前存储空间已满，(realloc就是)增加内存分配，函数realloc()
 								  // void* realloc(void* ptr, unsigned newsize);  给一个已经分配了地址的指针重新分配空间,参数ptr为原有的空间地址,newsize是重新申请的地址长度.
 		ElemType *newbase = (ElemType *)realloc(L.elem, L.(LIST_INIT_SIZE + LIST_INCREMENT) * sizeof(ElemType));
 		if (!newbase) exit(OVERFLOW);//存储分配失败
 		L.elem = newbase;//新的地址
-		L.listSize += LIST_INCREMENT;//增加存储容量       
+		L.listsize += LIST_INCREMENT;//增加存储容量       
 	}
 	ElemType *p, *q;
 	q = &(L.elem[i - 1]);
@@ -108,7 +103,7 @@ Status ListInsert_Sq_Pointer(SqList &L, int i, ElemType e) {
 }//ListInsert_Sq
 Status ListInsert_Sq_Pointer_Se(SqList &L, int i, ElemType e) { //插入线性表 使用指针 简化写法  不要新开辟内存
 	if (i<1 || i>L.length + 1) return FALSE;//i的合法值为1<=i<=ListLength_Sq(L)+1  (L),因为 index <==> i-1
-	if (L.length >= L.listSize) exit(OVERFLOW);//超出存储空间，报错退出
+	if (L.length >= L.listsize) exit(OVERFLOW);//超出存储空间，报错退出
 	PElemType p,q;
 	PElemType pos;
 	pos = L.elem[i - 1];
@@ -126,7 +121,7 @@ Status ListInsert_Sq_Pointer_Se(SqList &L, int i, ElemType e) { //插入线性�
 Status ListInsert_Sq_Index(SqList *L, int i, ElemType e) { //线性表 插入元素 使用下标
 	int k; //k表示最末尾下标
 	if (i<1 || i>L.length + 1) return FALSE;//i的合法值为1<=i<=ListLength_Sq(L)
-	if (L.length >= L.listSize) exit(OVERFLOW);//超出存储空间，报错退出	
+	if (L.length >= L.listsize) exit(OVERFLOW);//超出存储空间，报错退出	
 	if (i <= L->length) { //被插入的元素不在表尾
 		for (k = L->length - 1; p >= i - 1; k--)
 			L->data[k + 1] = L->data[k]; //将被插入位置之后的 所有元素 右移一位				

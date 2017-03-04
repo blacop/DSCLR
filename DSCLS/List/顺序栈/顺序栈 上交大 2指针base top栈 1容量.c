@@ -22,24 +22,40 @@ typedef int size_t;
 #define MLCS (Node *)malloc(sizeof(Node))
 */
 /*
-//链栈S的基本操作声明 带返回值 带初始条件 //初始条件:栈S己存在
+ADT 栈(stack) {
+Data
+同线性表。元素具有相同的类型，相邻元素
+Operation//栈的基本操作
+InitStack(&S) //初始化顺序栈S
+DestroyStack(&S) //销毁顺序栈S
+ClearStack(&S) //清空顺序栈S
+StackEmpty(S) //判断顺序栈S是否为空
+StackLength(S) //求顺序栈S的长度
+GetTop(S) //取顺序栈S的第i个元素 取得栈的上面顶部出口的元素
+Push(&S, e) //压栈 加入一个栈顶元素
+Pop(&S, &e) //出栈 弹出一个栈顶元素
+StackTraverse(S, visit()) //遍历顺序栈S:依次对S的每个元素调用visit()
+}//endADT
+*/
+/*
+//顺序栈S的基本操作声明 带返回值 带初始条件 //初始条件:栈S己存在
 Status InitStack(&S)
-//初始化链栈S
+//初始化顺序栈S
 Status DestroyStack(&S)
 //初始条件:栈S己存在
-//销毁链栈S
+//销毁顺序栈S
 Status ClearStack(&S)
 //初始条件:栈S己存在
-//清空链栈S
+//清空顺序栈S
 Status StackEmpty(S)
 //初始条件:栈S己存在
-//判断链栈S是否为空
+//判断顺序栈S是否为空
 int StackLength(S)
 //初始条件:栈S己存在
-//求链栈S的长度
+//求顺序栈S的长度
 ElemType GetTop(S,e)
 //初始条件:栈S己存在 且非空
-//取链栈S的第i个元素 取得栈的上面顶部出口的元素
+//取顺序栈S的第i个元素 取得栈的上面顶部出口的元素
 Status Push(&S,e)
 //初始条件:栈S己存在
 //压栈 加入一个栈顶元素
@@ -48,36 +64,28 @@ Status Pop(&S,&e)
 //出栈 弹出一个栈顶元素
 Status StackTraverse(S,visit())
 //初始条件:栈S己存在 且非空
-//遍历链栈S:依次对S的每个元素调用visit()
+//遍历顺序栈S:依次对S的每个元素调用visit()
 */
-/*
-//链栈S的基本操作声明带返回值
-Status InitStack(&S) //初始化链栈S
-Status DestroyStack(&S) //销毁链栈S
-Status ClearStack(&S) //清空链栈S
-Status StackEmpty(S) //判断链栈S是否为空
-int StackLength(S) //求链栈S的长度
-ElemType GetTop(S,e) //取链栈S的第i个元素 取得栈的上面顶部出口的元素
+/*//顺序栈S的基本操作简版
+InitStack(&S) //初始化顺序栈S
+DestroyStack(&S) //销毁顺序栈S
+ClearStack(&S) //清空顺序栈S
+StackEmpty(S) //判断顺序栈S是否为空
+StackLength(S) //求顺序栈S的长度
+GetTop(S) //取顺序栈S的第i个元素 取得栈的上面顶部出口的元素
+Push(&S, e) //压栈 加入一个栈顶元素
+Pop(&S, &e) //出栈 弹出一个栈顶元素
+StackTraverse(S, visit()) //遍历顺序栈S:依次对S的每个元素调用visit()*/
+/*//顺序栈S的基本操作声明带返回值
+Status InitStack(&S) //初始化顺序栈S
+Status DestroyStack(&S) //销毁顺序栈S
+Status ClearStack(&S) //清空顺序栈S
+Status StackEmpty(S) //判断顺序栈S是否为空
+int StackLength(S) //求顺序栈S的长度
+ElemType GetTop(S,e) //取顺序栈S的第i个元素 取得栈的上面顶部出口的元素
 Status Push(&S,e) //压栈 加入一个栈顶元素
 Status Pop(&S,&e) //出栈 弹出一个栈顶元素
-Status StackTraverse(S,visit()) //遍历链栈S:依次对S的每个元素调用visit()
-*/
-/*
-//链栈S的基本操作简版
-InitStack(&S) //初始化链栈S
-DestroyStack(&S) //销毁链栈S
-ClearStack(&S) //清空链栈S
-StackEmpty(S) //判断链栈S是否为空
-StackLength(S) //求链栈S的长度
-GetTop(S) //取链栈S的第i个元素 取得栈的上面顶部出口的元素
-Push(&S,e) //压栈 加入一个栈顶元素
-Pop(&S,&e) //出栈 弹出一个栈顶元素
-StackTraverse(S,visit()) //遍历链栈S:依次对S的每个元素调用visit()
-//visit() //  visit 一般是指树型链表结构中对某个节点内容进行访问的函数，
-//	就是取出节点内容去做某一件事，通常算法中不写出具体函数内容。
-//  树型链表结构中自顶开始按照某种顺序顺藤摸瓜至某个节点的过程称为“遍历”
-*/
-
+Status StackTraverse(S,visit()) //遍历顺序栈S:依次对S的每个元素调用visit()*/
 //---------------顺序栈----------------
 //顺序栈 初始化 压栈 弹栈 判断为空 求容量
 /*

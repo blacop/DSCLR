@@ -6,13 +6,15 @@
 #define FALSE 0
 #define INFEASIBLE  -1
 #define OVERFLOW -2
+#define Empty 0
 //#define SElemType int
 //#define Status int
 typedef int SElemType;
 typedef int ElemType;
 typedef int Status;
 typedef int size_t;
-#define MAXSIZE 100
+#define MAX_SIZE 100
+#define STACK_INIT_SIZE 100
 /*
 #define Node Node
 #define LEN sizeof(Node)
@@ -258,12 +260,53 @@ int symmetry() {
 }//symmetry
  //上交大 10/29
 //定义双向栈
-typedef struct tws{ //定义双向栈
+typedef struct tws { //定义双向栈
 	SElemType *base;//基地址指针,栈底指针,存储空间，存放头地址,也可表示数组的名字 或地址  或第一个元素
-	SElemType *top0,*top1;//栈顶指针,SElemType的指针大小根据数据类型来确定
-	int stackSize;//当前存储容量
+	SElemType *top0, *top1;//栈顶指针,SElemType的指针大小根据数据类型来确定
+	int stacksize;//当前存储容量
 }tws;
-
-
-
+Status InitStack(tws &S) {
+	//构造一个空栈
+	S.base = (SElemType *)malloc(STACK_INIT_SIZE * sizeof(SElemType));
+	if (!S.base) exit(OVERFLOW);
+	S.stacksize = STACK_INIT_SIZE;
+	S.top0 = S.base;
+	S.top1 = S.base + S.stacksize - 1;
+	return TRUE;
+}//InitStack
+Status Push(tws &S, int i, SElemType x) { //入栈
+	//元素x插入到第i个栈中
+	if (S.top0 > S.top1) exit(OVERFLOW);//栈满
+	if (i == 0) {
+		S.base[S.top0] = x;
+		S.top0++;
+	}
+	else if (i == 1) {
+		S.base[S.top1] = x;
+		S.top1--;
+	}
+	else //异常处理
+		return FALSE;
+	return TRUE;
+}//Push
+Status Pop(tws &S, int i, SElemType &e) { //出栈
+	//从栈顶读取数据放入e内，栈中下一元素所在位置成为新的栈顶
+	if (i == 0) { //StackEmpty 0
+		if (S.top0 == S.base)
+			Exit(Empty);
+		e = *--top0;
+	}
+	else if (i == 1) { //StackEmpty 1
+		if (S.top1 == S.base + S.stacksize - 1)
+			Exit(Empty);
+		e = *++top1;
+	}
+	else
+		return FALSE;
+	return TRUE;
+}//Pop
+void stackFull(tws &S) { //栈满
+	if (top0 > top1) return true;
+	else return false;//top0 <= top1 
+}
 

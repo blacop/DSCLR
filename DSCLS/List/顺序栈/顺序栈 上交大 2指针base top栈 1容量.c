@@ -202,7 +202,7 @@ Status DifferenceElem(SqStack S, int e) {
 	}//while
 }
 //Mix Type
-typedef struct { //封装一个顺序栈结构 为SqStack
+typedef struct SqStack { //封装一个顺序栈结构 为SqStack
 	SElemType *base;//基地址指针,栈底指针,存储空间，存放头地址,也可表示数组的名字 或地址  或第一个元素
 	SElemType *top;//栈顶指针,SElemType的指针大小根据数据类型来确定
 	int stackSize;//当前存储容量
@@ -213,7 +213,7 @@ typedef struct SqQueue { //封装一个顺序队列Node Tan,
 	int front;//指向队列的头一个元素
 	int rear;//指向队尾的下一个元素，类似于==>top
 }SqQueue, Queue;
-
+//上交大 9/29
 void ReverseQueue(SqQueue &Q) {
 	//逆置队列
 	Stack S;
@@ -256,6 +256,13 @@ int symmetry() {
 		return FALSE;
 	}
 }//symmetry
+ //上交大 10/29
+//定义双向栈
+typedef struct tws{ //定义双向栈
+	SElemType *base;//基地址指针,栈底指针,存储空间，存放头地址,也可表示数组的名字 或地址  或第一个元素
+	SElemType *top0,*top1;//栈顶指针,SElemType的指针大小根据数据类型来确定
+	int stackSize;//当前存储容量
+}tws;
 
 
 

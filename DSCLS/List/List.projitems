@@ -25,6 +25,7 @@
     <None Include="$(MSBuildThisFileDirectory)单链表\链表的操作.c" />
     <None Include="$(MSBuildThisFileDirectory)双向链表\双向循环链表.c" />
     <None Include="$(MSBuildThisFileDirectory)双向链表\双向链表.c" />
+    <None Include="$(MSBuildThisFileDirectory)字符串\字符串的表示和实现 上交大.c" />
     <None Include="$(MSBuildThisFileDirectory)链栈 头插法\一次封装 头插法 链栈 难以理解.c" />
     <None Include="$(MSBuildThisFileDirectory)链栈 头插法\一次封装 栈——链栈 头插法 .c" />
     <None Include="$(MSBuildThisFileDirectory)链栈 头插法\二次封装 LStack_Head.c" />
@@ -50,6 +51,7 @@
     <None Include="$(MSBuildThisFileDirectory)链队列\链队列的建立、判空、入队、出队、求长、访头、清空和销毁.c" />
     <None Include="$(MSBuildThisFileDirectory)静态链表\静态链表.c" />
     <None Include="$(MSBuildThisFileDirectory)顺序栈\顺序栈 上交大 2指针base top栈 1容量.c" />
+    <None Include="$(MSBuildThisFileDirectory)顺序栈\顺序栈 上交大 双向栈.c" />
     <None Include="$(MSBuildThisFileDirectory)顺序栈\顺序栈 大话 数组 int top栈.c" />
     <None Include="$(MSBuildThisFileDirectory)顺序栈\顺序栈 整理 管炳耀.c" />
     <None Include="$(MSBuildThisFileDirectory)顺序栈\顺序栈 重写.c" />

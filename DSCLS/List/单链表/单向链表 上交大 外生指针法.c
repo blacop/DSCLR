@@ -163,14 +163,30 @@ Status Insert_Link(LinkList L, int i, ElemType e) {
 	pre->next = ins;
 	return TRUE;
 }
-Status ListInsert_Link_Yan(LinkList &L, int i, ElemType e) { //在带head的单链表L中第i个位置之前插入元素e	
+Status ListInsert(LinkList &L, int i, ElemType e) { //在带head的单链表L中第i个位置之前插入元素e	
+	//前插操作需要查找第i个位置的结点的直接前驱。
 	p = L; j = 0;//p为指针,被插入的previous LNode
-	while (p && j < i - 1) { p = p->next; ++j; }//寻找第i个结点,指针下移,j最后停在i
+	while (p && j < i - 1) { p = p->next; ++j; }//寻找第i-1个结点,指针下移,j最后停在i-2
 	if (!p || j > i) return FALSE;
+
 	s = (LinkList)malloc(sizeof(LNode));//生成新节点，开辟内存空间 返回指针s,insert
 	s->data = e;//s->data域的赋值 assignment
-	s->next = p->next;//指针操作 ,=右往左，指针 指向 
-	p->next = s;
+
+	s->next = p->next;//指针操作 ,=右往左，指针 指向,core
+	p->next = s;//core
+	return TRUE;
+}
+Status ListInsert_Post(LinkList &L, int i, ElemType e) { //在带head的单链表L中第i个位置之后插入元素e	
+	//后插操作需要查找第i个位置的结点的引用。设p为第i个位置的结点的引用
+	p = L; j = 0;//p为指针,被插入的previous LNode
+	while (p && j < i) { p = p->next; ++j; }//寻找第i-1个结点,指针下移,j最后停在i-2
+	if (!p || j > i) return FALSE;
+
+	s = (LinkList)malloc(sizeof(LNode));//生成新节点，开辟内存空间 返回指针s,insert
+	s->data = e;//s->data域的赋值 assignment
+
+	s->next = p->next;//指针操作 ,=右往左，指针 指向,core
+	p->next = s;//core
 	return TRUE;
 }
 Status ListDelete_Link_Yan(LinkList &L, int i, ElemType &e) { //在带head的单链表L中第i个位置 删除元素e		
@@ -231,12 +247,17 @@ ElemType GetElem_Link_OutData_Guan(LinkList L, int i) {
 	return e;
 }
 
-void BackBefore(LNode *s, LNode *q) { //Link Cirle, s linke before LNode q
+void ReLinkCirleListBefore(LNode *s, LNode *q) {
+	//Link Cirle, s linke before LNode q
+	//从LNode *s开始，找到LNode q之前的结点 连接到s,组成一个新的循环链表
 	P = s;
 	while (p->next != q) p = ->next;
 	p->next = s;
 }//BackBefore
-void BackBeforeAfterAgain(LNode *pa, LNode *pb) { //Link Cirle,twice，
+void ReLinkCirleListBeforeThenReLinkTheReminder(LNode *pa, LNode *pb) {
+	//从LNode *pa开始，找到LNode pb之前的结点 连接到pa,组成一个新的循环链表，然后，从pb结点开——连接到pa之前的结点，组成一个新的循环链表
+	//2次
+	//Link Cirle,twice，
 	//pa,pb finger LinkStack's two node. a link before b, b linke befor a.
 	BackBefore(pa, pb);
 	BackBefore(pb, pa);
@@ -255,7 +276,7 @@ Status LinkList_DelBetween(LinkList &L, ElemType mink, ElemType maxk) {
 		Q = P->next; //☌ ♂
 	}
 }//LinkList_BetweenDel
-Status AppendBefore(LinkList &L, ElemType e) { //头插元素
+Status AppendHead(LinkList &L, ElemType e) { //头插元素
 	PLNode s = (LNode *)malloc(sizeof(LNode)); //开辟新节点
 	s->data = e; //新节点 数据赋值
 
@@ -303,7 +324,7 @@ void MergeLinkList_ToOld_ASC_Tan_4StarHard(LinkList &La, LinkList &Lb) {
 		q->next = pb; //插入所有剩余的pb
 	}
 }//MergeList_Link_Yan
-Status MergeLinkList_ToOld_DSC_3ptr_Tan_4StarHard(LinkList &A, &B, &C) {
+Status MergeLinkList_ToOld_ASC_3ptr_Tan_4StarHard(LinkList &A, &B, &C) {
 	/*
 	//合并得到新的单链表Lc，降序
 	//已知La和Lb升序排列
@@ -357,7 +378,7 @@ Status MergeLinkList_ToOld_DSC_3ptr_Tan_4StarHard(LinkList &A, &B, &C) {
 	//-------------
 	*/
 }//MergeLinkList_ToOld_DSC_3ptr_Tan
-Status MergeLinkList_ToNew_DSC_6Ptr_Guan_3StarHard(LinkList La, LinkList Lb, LinkList &Lc) { //合并得到新的单链表Lc，降序
+Status MergeLinkList_ToNew_ASC_6Ptr_Guan_3StarHard(LinkList La, LinkList Lb, LinkList &Lc) { //合并得到新的单链表Lc，降序
 	//已知La和Lb升序排列
 	//合并得到新的单链表Lc,Lc的元素也按值非递减排列
 	LinkList pa, pb, pc;
@@ -514,7 +535,7 @@ Status ReverseLink_InOld(LinkList &h) {
 	//只需将头结点后结点依次加入新链，
 	//加入总是放在新链的首元素位置上
 	PLNode p, q;
-	p = h->next;  
+	p = h->next;
 	h->next = NULL; //h finger head
 	while (t != NULL) {
 		q = p;//q前驱

@@ -12,9 +12,9 @@
 typedef int SElemType;
 typedef int ElemType;
 typedef int Status;
-typedef int size_t;
 #define MAX_SIZE 100
 #define STACK_INIT_SIZE 100
+#define STACK_INCREMENT 10
 /*
 #define Node Node
 #define LEN sizeof(Node)

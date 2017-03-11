@@ -23,9 +23,13 @@
     <None Include="$(MSBuildThisFileDirectory)单链表\链表各类操作详解 学生分数.c" />
     <None Include="$(MSBuildThisFileDirectory)单链表\链表的创建，增加、删除节点，链表的逆序、排序和销毁等.c" />
     <None Include="$(MSBuildThisFileDirectory)单链表\链表的操作.c" />
+    <None Include="$(MSBuildThisFileDirectory)单链表\魔术师发牌问题（CPP）.cpp" />
+    <None Include="$(MSBuildThisFileDirectory)单链表\魔术师发牌问题（循环链表）.c" />
     <None Include="$(MSBuildThisFileDirectory)双向链表\双向循环链表.c" />
     <None Include="$(MSBuildThisFileDirectory)双向链表\双向链表.c" />
-    <None Include="$(MSBuildThisFileDirectory)字符串\字符串的表示和实现 上交大.c" />
+    <None Include="$(MSBuildThisFileDirectory)字符串\字符串堆分配.c" />
+    <None Include="$(MSBuildThisFileDirectory)字符串\字符串定长分配 上交大.c" />
+    <None Include="$(MSBuildThisFileDirectory)字符串\字符串定长分配 大话.c" />
     <None Include="$(MSBuildThisFileDirectory)链栈 头插法\一次封装 头插法 链栈 难以理解.c" />
     <None Include="$(MSBuildThisFileDirectory)链栈 头插法\一次封装 栈——链栈 头插法 .c" />
     <None Include="$(MSBuildThisFileDirectory)链栈 头插法\二次封装 LStack_Head.c" />

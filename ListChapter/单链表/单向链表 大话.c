@@ -298,8 +298,7 @@ void MergeList_Link_Tan(LinkList &La, LinkList &Lb) {
 		if (pa->data <= pb->data) {//如果小于=，pc指针指向pa
 			q = pa;//q下移 
 			pa = pa->next;//pa下移
-		}
-		else {
+		} else {
 			//如果 且 只有 在    pa->data > pb->data,则将pb插入到pa的前面
 			//转化 判断条件 如果 pb->data > pa->data ,则将pb插入到pa的前面
 			t = pb;// t 下移

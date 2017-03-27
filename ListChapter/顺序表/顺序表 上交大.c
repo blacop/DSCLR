@@ -109,7 +109,7 @@ Status ListInsert_Sq_Pointer(SqList &L, int i, ElemType e) {
 Status ListInsert_Sq_Pointer_Se(SqList &L, int i, ElemType e) { //插入线性表 使用指针 简化写法  不要新开辟内存
 	if (i<1 || i>L.length + 1) return FALSE;//i的合法值为1<=i<=ListLength_Sq(L)+1  (L),因为 index <==> i-1
 	if (L.length >= L.listSize) exit(OVERFLOW);//超出存储空间，报错退出
-	PElemType p,q;
+	PElemType p, q;
 	PElemType pos;
 	pos = L.elem[i - 1];
 	q = &(L.elem[i - 1]);//q为插入位置 指针
@@ -208,8 +208,7 @@ Status LocateElem_OutOrderOrBool(sql &L, ElemType E) {
 	size_t i; //controller limit i
 	ElemType *p; //temp Ptr p
 	p = L.elem; //temp Ptr p
-	for (size_t i = 1; i <= L.length; i++)
-	{
+	for (size_t i = 1; i <= L.length; i++) {
 		if (*L.elem == E) {
 			L.elem = p;
 			return i;//返回i就是返回order,
@@ -239,8 +238,7 @@ int LocateElem_OutOrder(SqList L, ElemType e, Status(*compare)(ElemType, ElemTyp
 int CompareArray(SqList A, SqList B) {
 	//比较数组大小的方法
 	j = 0;//计数器
-	while (j < A.length && j < B.length)
-	{
+	while (j < A.length && j < B.length) {
 		if (A.elem[j] < B.elem[j]) return -1;
 		else if (A.elem[j] > B.elem[j]) return 1;
 		else j++;
@@ -291,8 +289,7 @@ void MergeSqList(List La, List Lb, List &Lc) {
 	while (pa <= pa.last && pb <= pb.last) { //开始合并
 		if (*pa <= *pb) {
 			*pc++ = *pa++;//a存入c
-		}
-		else {
+		} else {
 			*pc++ = *pb++;//b存入c
 		}
 	}
@@ -356,8 +353,7 @@ Status MergeSqList_Union(List La, List Lb, List &Lc) {
 	while (pa <= pa.last && pb <= pb.last) { //开始合并
 		if (*pa <= *pb) {
 			*pc++ = *pa++;//a存入c
-		}
-		else {
+		} else {
 			*pc++ = *pb++;//b存入c
 		}
 	}

@@ -54,8 +54,7 @@ Status ClearList(struct LNode *L) { /*将L重置为空表*/
 Status ListEmpty(LinkList *L) { /*判断链表是否为空表*/
 	if (L->next) {
 		return FALSE;
-	}
-	else {
+	} else {
 		return TRUE;
 	}
 }

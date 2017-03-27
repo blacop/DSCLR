@@ -194,8 +194,7 @@ void MergeList_Link_Tan(LinkList &La, LinkList &Lb) {
 		if (pa->data <= pb->data) {//如果小于=，pc指针指向pa
 			q = pa;//q下移 
 			pa = pa->next;//pa下移
-		}
-		else {
+		} else {
 			//如果 且 只有 在    pa->data > pb->data,则将pb插入到pa的前面
 			//转化 判断条件 如果 pb->data > pa->data ,则将pb插入到pa的前面
 			t = pb;// t 下移
@@ -233,4 +232,21 @@ Status GetElem_Link_Yan(LinkList L, int i, ElemType &e) {
 	e = p->data;//取出第i个元素，值为e
 	return TRUE;
 }//GetElem_Link_Yan
+
+ //c语言　的结构体中可以利用函数指针的方法，实现c++中的成员函数；
+ //例如：
+struct stu_info {
+	char *name;
+	int age;
+	void(*print_info)(struct stu_info *stu);
+};
+void print_information(struct stu_info *stu) {
+
+}
+int main(void) {
+	struct stu_info stu;
+	stu.print_info = print_information;
+}
+//就是采用了“函数指针”来实现了c++中的类的封装。
+//函数的指针　功能很强大。
 

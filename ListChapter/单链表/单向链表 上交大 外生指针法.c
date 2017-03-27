@@ -6,17 +6,13 @@
 #define FALSE 0
 #define INFEASIBLE  -1
 #define OVERFLOW -2
-/*
-#define ElemType int
-#define Status int
-*/
 typedef int ElemType;
 typedef int Status;
 /*
-#define LNode LNode
-#define LEN sizeof(LNode)
-#define MLC (LNode *)malloc
-#define MLCS (LNode *)malloc(sizeof(LNode))
+#define Node Node
+#define LEN sizeof(Node)
+#define MLC (Node *)malloc
+#define MLCS (Node *)malloc(sizeof(Node))
 */
 /*
 //线性表的基本操作定义声明
@@ -69,7 +65,7 @@ Status ListTraverse(SqList L, bool(*visit)(ElemType));
 //操作结果：依次对L的每个元素调用函数visit().一旦visit()失败,则操作失败。 12
 */
 /*
-//线性表的基本操作定义声明
+//线性链表的基本操作定义声明
 InitList(&L) //初始化线性表L  1
 DestroyList(&L) //销毁线性表L  2
 ClearList(&L) //清空线性表L  3
@@ -96,15 +92,15 @@ ListTraverse(L,visit()) //遍历线性表:依次对L的每个元素调用visit()
 /*---------------线性单链表----------------
 单链表 初始化 创建 头插法 尾插法 插入 删除 查找 合并 长度
 */
-typedef struct LNode { //封装 结构体 链表的结点==数据元素Elem,结点的指针==链表==数据对象Obj
+typedef struct Node { //封装 结构体 链表的结点==数据元素Elem,结点的指针==链表==数据对象Obj
 	ElemType data; //数据Domain ,数据项item
-	struct LNode *next; //指针,引用Reference	
-}LNode, *LinkList, *PLNode;//类型重定义struct LNode为LNode，类型重定义 LNode的*指针 为LinkList
+	struct Node *next; //指针,引用Reference	
+}Node, *LinkList, *PNode;//类型重定义struct Node为Node，类型重定义 Node的*指针 为LinkList
 Status InitList(LinkList &L) { //初始化线性链表 产生一个头结点。单链表指针在外面传进来	
 	//head
 	//☒→NULL☞
 	//表头指针 从函数外面传进来
-	L = (LNode *)malloc(sizeof(LNode));
+	L = (Node *)malloc(sizeof(Node));
 	if (!L) { /* 存储分配失败 */
 		exit(OVERFLOW);
 	}
@@ -129,10 +125,10 @@ Status CreateList_Link_Tail_Guan(LinkList &L, int n) {
 	//表头指针 从函数外面传进来
 	LinkList head = &L, ptemp, pnew;
 	ptemp = head;//ptemp辅助指针 必须保证指向尾部,pointer points at head, CORE
-	for (int i = n; i >= 1; --i) { // crete n num LNode
-		pnew = (LinkList)malloc(sizeof(LNode));//生成新结点 SeCORE 开辟新节点
+	for (int i = n; i >= 1; --i) { // crete n num Node
+		pnew = (LinkList)malloc(sizeof(Node));//生成新结点 SeCORE 开辟新节点
 		scanf(%i, &pnew->data);//scanf data to dataArea,  SeCORE 输入数据
-		pnew->next = NULL;//the pnew must be tail LNode.  CORE	
+		pnew->next = NULL;//the pnew must be tail Node.  CORE	
 		ptemp->next = pnew;//对象obj(*ptemp).next 连接link to pnew, CORE
 		ptemp = pnew;//ptemp++  CORE
 	}
@@ -140,10 +136,10 @@ Status CreateList_Link_Tail_Guan(LinkList &L, int n) {
 void CreateList_Link_Head_Yan(LinkList &L, int n) {
 	//头插法 生成单链表 完整表
 	//逆位序输入n个元素的值，建立带表头结点的单链线性表L
-	L = (LinkList)malloc(sizeof(LNode));
+	L = (LinkList)malloc(sizeof(Node));
 	L->next = NULL;//L->next表示头结点的指针,先建立一个带头结点的单链表
 	for (i = n; i > 0; --i) {
-		p = (LinkList)malloc(sizeof(LNode));
+		p = (LinkList)malloc(sizeof(Node));
 		scanf(&p->data);//输入元素值
 		p->next = L->next;//挪动 头指针的后继
 		L->next = p;//挪动 头指针的后继
@@ -165,11 +161,11 @@ Status Insert_Link(LinkList L, int i, ElemType e) {
 }
 Status ListInsert(LinkList &L, int i, ElemType e) { //在带head的单链表L中第i个位置之前插入元素e	
 	//前插操作需要查找第i个位置的结点的直接前驱。
-	p = L; j = 0;//p为指针,被插入的previous LNode
+	p = L; j = 0;//p为指针,被插入的previous Node
 	while (p && j < i - 1) { p = p->next; ++j; }//寻找第i-1个结点,指针下移,j最后停在i-2
 	if (!p || j > i) return FALSE;
 
-	s = (LinkList)malloc(sizeof(LNode));//生成新节点，开辟内存空间 返回指针s,insert
+	s = (LinkList)malloc(sizeof(Node));//生成新节点，开辟内存空间 返回指针s,insert
 	s->data = e;//s->data域的赋值 assignment
 
 	s->next = p->next;//指针操作 ,=右往左，指针 指向,core
@@ -178,11 +174,11 @@ Status ListInsert(LinkList &L, int i, ElemType e) { //在带head的单链表L中
 }
 Status ListInsert_Post(LinkList &L, int i, ElemType e) { //在带head的单链表L中第i个位置之后插入元素e	
 	//后插操作需要查找第i个位置的结点的引用。设p为第i个位置的结点的引用
-	p = L; j = 0;//p为指针,被插入的previous LNode
+	p = L; j = 0;//p为指针,被插入的previous Node
 	while (p && j < i) { p = p->next; ++j; }//寻找第i-1个结点,指针下移,j最后停在i-2
 	if (!p || j > i) return FALSE;
 
-	s = (LinkList)malloc(sizeof(LNode));//生成新节点，开辟内存空间 返回指针s,insert
+	s = (LinkList)malloc(sizeof(Node));//生成新节点，开辟内存空间 返回指针s,insert
 	s->data = e;//s->data域的赋值 assignment
 
 	s->next = p->next;//指针操作 ,=右往左，指针 指向,core
@@ -190,7 +186,7 @@ Status ListInsert_Post(LinkList &L, int i, ElemType e) { //在带head的单链�
 	return TRUE;
 }
 Status ListDelete_Link_Yan(LinkList &L, int i, ElemType &e) { //在带head的单链表L中第i个位置 删除元素e		
-	p = L; j = 0;//p为指针,被插入的previous LNode
+	p = L; j = 0;//p为指针,被插入的previous Node
 	while (p && j < i - 1) { p = p->next; ++j; }//寻找第i个结点,下标最后是i-1,指针下移,j最后停在i
 	if (p->next || j > i - 1) return FALSE;//删除位置不合理
 
@@ -200,7 +196,7 @@ Status ListDelete_Link_Yan(LinkList &L, int i, ElemType &e) { //在带head的单
 	e = q->data; //取出 值为e
 	free(q);//返回值，释放空间
 }
-LNode *LocateLinkElem(LinkList L, ElemType e) {
+Node *LocateLinkElem(LinkList L, ElemType e) {
 	//在L中找到第一个值和e相同的结点，返回其地址，若不存在，返回空值NULL。
 	if (!L) return NULL;
 	p = L;
@@ -208,8 +204,8 @@ LNode *LocateLinkElem(LinkList L, ElemType e) {
 	return p;//时间复杂度O(n)
 }
 
-int ListLength_Link(struct LNode *head) {//求线性单链表长度
-	struct LNode *p = head->next;//LNode1
+int ListLength_Link(struct Node *head) {//求线性单链表长度
+	struct Node *p = head->next;//Node1
 	int len = 0;
 	while (p) {
 		len++;
@@ -221,7 +217,7 @@ int ListLength_Link(struct LNode *head) {//求线性单链表长度
 Status GetElem_Link_Yan_OutBool(LinkList L, int i, ElemType &e) {
 	//取出元素,i是序号,e为值
 	//L为带头结点的单链表的头节点
-	//L-next为 带头结点的单链表的 头指针 指向第一个结点LNode1
+	//L-next为 带头结点的单链表的 头指针 指向第一个结点Node1
 	//当第i个元素存在时，将值返回给e,返回TRUE, 否则FALSE
 	LinkList p = L->next;//初始化，p指向第一个结点，
 	int j = 1;//j为计数器
@@ -235,7 +231,7 @@ Status GetElem_Link_Yan_OutBool(LinkList L, int i, ElemType &e) {
 ElemType GetElem_Link_OutData_Guan(LinkList L, int i) {
 	//取出元素,i是序号,e为值
 	//L为带头结点的单链表的头节点
-	//L-next为 带头结点的单链表的 头指针 指向第一个结点LNode1
+	//L-next为 带头结点的单链表的 头指针 指向第一个结点Node1
 	//当第i个元素存在时，将值返回给e,返回TRUE, 否则FALSE
 	LinkList p = L->next;//初始化，p指向第一个结点，
 	int j = 1;//j为计数器
@@ -247,15 +243,15 @@ ElemType GetElem_Link_OutData_Guan(LinkList L, int i) {
 	return e;
 }
 
-void ReLinkCirleListBefore(LNode *s, LNode *q) {
-	//Link Cirle, s linke before LNode q
-	//从LNode *s开始，找到LNode q之前的结点 连接到s,组成一个新的循环链表
+void ReLinkCirleListBefore(Node *s, Node *q) {
+	//Link Cirle, s linke before Node q
+	//从Node *s开始，找到Node q之前的结点 连接到s,组成一个新的循环链表
 	P = s;
 	while (p->next != q) p = ->next;
 	p->next = s;
 }//BackBefore
-void ReLinkCirleListBeforeThenReLinkTheReminder(LNode *pa, LNode *pb) {
-	//从LNode *pa开始，找到LNode pb之前的结点 连接到pa,组成一个新的循环链表，然后，从pb结点开——连接到pa之前的结点，组成一个新的循环链表
+void ReLinkCirleListBeforeThenReLinkTheReminder(Node *pa, Node *pb) {
+	//从Node *pa开始，找到Node pb之前的结点 连接到pa,组成一个新的循环链表，然后，从pb结点开——连接到pa之前的结点，组成一个新的循环链表
 	//2次
 	//Link Cirle,twice，
 	//pa,pb finger LinkStack's two node. a link before b, b linke befor a.
@@ -263,13 +259,22 @@ void ReLinkCirleListBeforeThenReLinkTheReminder(LNode *pa, LNode *pb) {
 	BackBefore(pb, pa);
 }//BackBeforeAfterAgain
 
+void Destroy(LinkList* L) {	
+	LinkList* p; //temp ptr
+	while (L) {
+		p = L;
+		L = L->next;
+		free(p);		
+	}
+}
+
 Status LinkList_DelBetween(LinkList &L, ElemType mink, ElemType maxk) {
 	//删除大于mink小于maxk的所有元素，L是带头结点的单链表
-	P = L; //temp Ptr P finger L's head, then P finger mink's 前驱。
+	LinkList P = L; //temp Ptr P finger L's head, then P finger mink's 前驱。
 	while (P->next != NULL && P->next->data <= mink) //then P finger mink's 前驱。
 		P = P->next;//find the node before mink //找出第last个大于mink的元素
 	if (P->next = NULL) return FALSE; //mean mink's 前驱 not 存在 ，( !P->next )
-	Q = P->next; //temp Ptr Q finger mink
+	LinkList Q = P->next; //temp Ptr Q finger mink
 	while (!Q && (Q->data < maxk)) { //DestroyList()
 		P->next = Q->next; //☊
 		free(Q); //✄
@@ -277,14 +282,14 @@ Status LinkList_DelBetween(LinkList &L, ElemType mink, ElemType maxk) {
 	}
 }//LinkList_BetweenDel
 Status AppendHead(LinkList &L, ElemType e) { //头插元素
-	PLNode s = (LNode *)malloc(sizeof(LNode)); //开辟新节点
+	PNode s = (Node *)malloc(sizeof(Node)); //开辟新节点
 	s->data = e; //新节点 数据赋值
 
 	s->next = L->next; //☊ ♎ //头插元素 核心//☊ ♎ //☌ ♂//head 不存数据
 	L->next = s; //☌ ♂
 }
 Status AppendAfter(LinkList &L, ElemType e) { //尾插元素
-	PLNode s = (LNode *)malloc(sizeof(LNode));//开辟新节点
+	PNode s = (Node *)malloc(sizeof(Node));//开辟新节点
 	s->data = e; //新节点 数据赋值
 
 	LinkList p;//tempPtr
@@ -309,8 +314,7 @@ void MergeLinkList_ToOld_ASC_Tan_4StarHard(LinkList &La, LinkList &Lb) {
 		if (pa->data <= pb->data) {//如果小于=，pc指针指向pa
 			q = pa;//q下移 
 			pa = pa->next;//pa下移
-		}
-		else {
+		} else {
 			//如果 且 只有 在    pa->data > pb->data,则将pb插入到pa的前面
 			//转化 判断条件 如果 pb->data > pa->data ,则将pb插入到pa的前面
 			t = pb;// t 下移
@@ -340,8 +344,7 @@ Status MergeLinkList_ToOld_ASC_3ptr_Tan_4StarHard(LinkList &A, &B, &C) {
 	while (p && q) { //同时存在
 		if (p->data <= q->data) { //curent min is p
 			s = p; p = p->next; //s finger curent min //p++
-		}
-		else { //(p->data > q->data) //curent min is q
+		} else { //(p->data > q->data) //curent min is q
 			s = q; q = q->next; //s finger curent min //q++
 		}
 		s->next = C->next; //s is current node,头插
@@ -397,8 +400,7 @@ Status MergeLinkList_ToNew_ASC_6Ptr_Guan_3StarHard(LinkList La, LinkList Lb, Lin
 			AppendBefore(pc, pa->data);//apd c
 			q = pa;//q下移 
 			pa = pa->next;//pa下移
-		}
-		else { //如果 pb->data < pa->data
+		} else { //如果 pb->data < pa->data
 			//如果 且 只有 在    pa->data > pb->data,则将pb插入到pa的前面
 			//转化 判断条件 如果 pb->data > pa->data ,则将pb插入到pa的前面
 			AppendBefore(pc, pb->data);//apd c
@@ -435,8 +437,7 @@ Status MergeLinkList_ToNew_Union_ASC_6Ptr_Guan_3StarHard(LinkList La, LinkList L
 			if (!LocateLinkElem(Lc, e)) AppendAfter(pc, pa->data);//apd c
 			q = pa;//q下移 
 			pa = pa->next;//pa下移
-		}
-		else {
+		} else {
 			/*
 			//如果 pb->data < pa->data
 			   //如果 且 只有 在    pa->data > pb->data,则将pb插入到pa的前面
@@ -477,8 +478,7 @@ Status MergeLinkList_ToNew_Intersection_ASC_6Ptr_Guan_3StarHard(LinkList La, Lin
 			if (LocateLinkElem(La, e) && LocateLinkElem(Lb, e)) AppendAfter(pc, pa->data);//apd c
 			q = pa;//q下移 
 			pa = pa->next;//pa下移
-		}
-		else {
+		} else {
 			/*
 			//如果 pb->data < pa->data
 			//如果 且 只有 在    pa->data > pb->data,则将pb插入到pa的前面
@@ -506,8 +506,8 @@ Status MergeLinkList_ToNew_Intersection_ASC_6Ptr_Guan_3StarHard(LinkList La, Lin
 
 Status LL_Detete_In_A_By_B_Inter_C(SqList &A, SqList B, SqList C) {
 	//删除A中满足条件的元素：同时在B/C中出现的元素
-	PLNode p = A; //temp Ptr
-	PLNode q; //temp Ptr for free() node，临时指针for删除结点
+	PNode p = A; //temp Ptr
+	PNode q; //temp Ptr for free() node，临时指针for删除结点
 	ElemType e; //temp data
 	while (p->next != NULL) {
 		e = p->next->data; //赋值
@@ -515,8 +515,7 @@ Status LL_Detete_In_A_By_B_Inter_C(SqList &A, SqList B, SqList C) {
 			q = p->next; //q finger p head after node which node1
 			p->next = q->next; //p+2 move
 			ListDelete(q); //dispose(q)，ListDelete(q);
-		}
-		else p = p->next;//p++ move
+		} else p = p->next;//p++ move
 	}//while
 
 	/* Sqlist only
@@ -534,7 +533,7 @@ Status ReverseLink_InOld(LinkList &h) {
 	//假设在头结点，H为指向头结点的指针
 	//只需将头结点后结点依次加入新链，
 	//加入总是放在新链的首元素位置上
-	PLNode p, q;
+	PNode p, q;
 	p = h->next;
 	h->next = NULL; //h finger head
 	while (t != NULL) {
@@ -545,3 +544,99 @@ Status ReverseLink_InOld(LinkList &h) {
 	}
 	return TRUE;
 }//ReverseLink_InOld
+
+ //快速排序 数组的，不是链表的，链表的还不会
+void quicksort(PList v, int left, int right) {
+	if (left < right) {
+		int key = v[left];
+		int low = left;
+		int high = right;
+		while (low < high) {
+			while (low < high && v[high] > key)
+				high--;
+			v[low] = v[high];
+
+			while (low < high && v[low] < key)
+				low++;
+			v[high] = v[low];
+		}
+		v[low] = key;
+		quicksort(v, left, low - 1); // 递归调用
+		quicksort(v, low + 1, right);
+	}
+}
+
+//有参构造器,设置工作节点 data domain's value
+PNode* SetCurItemValue(PNode* head，float _coef, int _expn) {
+	head = (PNode*)malloc(sizeof(PNode));
+	if (!head)  /* 存储分配失败 */
+		exit(OVERFLOW);
+	coef = _coef;//赋值语句
+	expn = _expn;
+	next = NULL;
+	return head;
+}
+
+//工作指针设置到当前节点
+PList SetCurPtrCur(PList head, PNode e) {
+	PList p = head;
+	for (; p->next != NULL; p = p->next);
+	return PList;
+}
+
+//工作指针设置到最后节点
+PList SetCurPtrLast(PList head, PNode e) {
+	PList p = head;
+	for (; p->next != NULL; p = p->next);
+	return PList;
+}
+
+////c语言　的结构体中可以利用函数指针的方法，实现c++中的成员函数；
+////例如：
+//struct stu_info {
+//	char *name;
+//	int age;
+//	void(*print_info)(struct stu_info *stu);
+//};
+//void print_information(struct stu_info *stu) {
+//	
+//}
+//int main(void) {
+//	struct stu_info stu;
+//	stu.print_info = print_information;
+//}
+////就是采用了“函数指针”来实现了c++中的类的封装。
+////函数的指针　功能很强大。
+//
+//void(*Constructor)(polyNode* polyElem); //构造器,用函数指针实现 成员构造函数
+//void(*DeConstructor)(polyNode* polyElem); //析构器
+//
+//										  //构造器
+//void Constructor(polyNode* polyElem) {
+//
+//}
+////析构器
+//void DeConstructor(polyNode* polyElem) {
+//
+//}
+
+
+////void(*Constructor)(PNode* polyElem); //构造器, 用函数指针实现 成员函数	
+////构造器,在c语言里面实现构造器，赋值语句，默认值先不写了
+//PNode* Constructor(float _coef, int _expn) {
+//	PNode* head = (PNode*)malloc(sizeof(PNode));
+//	if (!head)  /* 存储分配失败 */
+//		exit(OVERFLOW);
+//	coef = _coef;//赋值语句
+//	expn = _expn;
+//	next = NULL;
+//	return head;
+//}
+
+////头插元素
+//void AddNodeHead(PList L, PNode e) { //头插元素
+//	PList s = (Node *)malloc(sizeof(Node)); //开辟新节点
+//	s->data = e; //新节点 数据赋值
+//	s->next = L->next; //☊ ♎ //头插元素 核心//☊ ♎ //☌ ♂//head 不存数据
+//	L->next = s; //☌ ♂
+//}
